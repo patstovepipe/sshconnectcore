@@ -1,3 +1,7 @@
+// To edit appsettings.json locally run this command (which untracks file)
+//     git update-index --assume-unchanged path/to/file
+// To start tracking file again
+//     git update-index --no-assume-unchanged path/to/file
 ﻿namespace SSHConnectCore.Configuration
 {
     public class AppSettings
