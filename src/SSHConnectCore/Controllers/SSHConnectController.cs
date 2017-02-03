@@ -3,18 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using SSHConnectCore.Models;
 using Microsoft.Extensions.Options;
 using SSHConnectCore.Configuration;
-using Microsoft.Extensions.Logging;
-using SSHConnectAPI.Filters;
-using Microsoft.AspNetCore.Http;
-using SSHConnectCore.Extensions;
-using SSHConnectCore.Models.Commands;
 using System.Linq;
 using Renci.SshNet.Common;
 using Renci.SshNet;
 
 namespace SSHConnectCore.Controllers
 {
-    [ConnectionActionFilter]
     public class SSHConnectController : Controller
     {
         private SSHConnection sshConnection;
@@ -23,25 +17,12 @@ namespace SSHConnectCore.Controllers
         public SSHConnectController(IOptions<AppSettings> settings)
         {
             this.appSettings = settings.Value;
+            this.sshConnection = new SSHConnection(this.appSettings);
         }
 
-        public void CheckConnection()
+        public IActionResult HasConnection()
         {
-            if (sshConnection == null)
-                sshConnection = new SSHConnection(appSettings);
-
-            if (!sshConnection.IsConnected())
-                sshConnection.Connect();
-        }
-
-        public IActionResult Connect()
-        {
-            return Json(sshConnection.IsConnected());
-        }
-
-        public IActionResult IsConnected()
-        {
-            return Json(sshConnection.IsConnected());
+            return Json(sshConnection.HasConnection());
         }
 
         public IActionResult Restart()
@@ -78,7 +59,7 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult KillProcess(string id)
         {
-            if (string.IsNullOrEmpty(id) || !SSHConnection.killProcessList.Contains(id))
+            if (string.IsNullOrEmpty(id) || !sshConnection.killProcessList.Contains(id))
             {
                 return Json("Error");
             }
@@ -94,7 +75,7 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult KillProcessList()
         {
-            return Json(SSHConnection.killProcessList);
+            return Json(sshConnection.killProcessList);
         }
 
         // for testing exception handling

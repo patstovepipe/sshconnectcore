@@ -12,38 +12,28 @@ namespace SSHConnectCore.Models
 {
     public class SSHConnection
     {
-        public static string[] killProcessList;
+        public string[] killProcessList;
         private AppSettings appSettings;
         private SSHServer server;
-        private SshClient client;
 
         public SSHConnection(AppSettings appSettings)
         {
-            killProcessList = appSettings.killprocesslist.Split(',');
-
             this.appSettings = appSettings;
-            server = new SSHServer(this.appSettings);
-
-            client = new SshClient(server.host, server.port, server.username, server.password);
+            this.killProcessList = this.appSettings.killprocesslist.Split(',');
+            this.server = new SSHServer(this.appSettings);
         }
 
-        public void Connect()
+        public bool HasConnection()
         {
-            try
+            bool hasConnection = false;
+            using (SshClient client = new SshClient(server.host, server.port, server.username, server.password))
             {
                 client.Connect();
+                hasConnection = client.IsConnected;
+                client.Disconnect();
             }
-            catch (Exception ex)
-            {
-                Logger.Log(this.GetType().Name, ex.Message);
-            }
-        }
 
-        public bool IsConnected()
-        {
-            if (client == null)
-                client = new SshClient(server.host, server.port, server.username, server.password);
-            return client.IsConnected;
+            return hasConnection;
         }
 
         public SshCommand RestartCommand()
