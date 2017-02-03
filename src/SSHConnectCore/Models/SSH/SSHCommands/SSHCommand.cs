@@ -2,10 +2,8 @@
 
 namespace SSHConnectCore.Models.Commands
 {
-    abstract public class Command
+    abstract public class SSHCommand : Command
     {
-        public SSHServer server;
-
         public SshCommand Run(string[] args = null)
         {
             SshCommand result;

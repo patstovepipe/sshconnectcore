@@ -4,17 +4,13 @@ using SSHConnectCore.Models.Commands;
 
 namespace SSHConnectCore.Models
 {
-    public class SSHConnection
+    public class SSHConnection : Connection
     {
         public string[] killProcessList;
-        private AppSettings appSettings;
-        private SSHServer server;
 
-        public SSHConnection(AppSettings appSettings)
+        public SSHConnection(AppSettings appSettings) : base(appSettings)
         {
-            this.appSettings = appSettings;
             this.killProcessList = this.appSettings.killprocesslist.Split(',');
-            this.server = new SSHServer(this.appSettings);
         }
 
         public bool HasConnection()
@@ -32,23 +28,23 @@ namespace SSHConnectCore.Models
 
         public SshCommand RestartCommand()
         {
-            Command command = new RestartCommand();
+            SSHCommand command = new RestartCommand();
             return RunCommand(command);
         }
 
         public SshCommand ShutdownCommand()
         {
-            Command command = new ShutdownCommand();
+            SSHCommand command = new ShutdownCommand();
             return RunCommand(command);
         }
 
         public SshCommand KillProcessCommand(string[] args)
         {
-            Command command = new KillProcessCommand();
+            SSHCommand command = new KillProcessCommand();
             return RunCommand(command, args);
         }
 
-        private SshCommand RunCommand(Command command, string[] args = null)
+        private SshCommand RunCommand(SSHCommand command, string[] args = null)
         {
             command.server = this.server;
 

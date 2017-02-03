@@ -2,11 +2,11 @@
 
 namespace SSHConnectCore.Models.Commands
 {
-    public class ShutdownCommand : Command
+    public class RestartCommand : SSHCommand
     {
         public override SshCommand RunDetails(SshClient client, string[] args = null)
         {
-            return client.RunCommand($"echo {server.password} | sudo -S shutdown now");
+            return client.RunCommand($"echo {server.password} | sudo -S shutdown -r now");
         }
     }
 }

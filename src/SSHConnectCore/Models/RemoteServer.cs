@@ -3,14 +3,14 @@ using System;
 
 namespace SSHConnectCore.Models
 {
-    public class SSHServer
+    public class RemoteServer
     {
         public string host { get; set; }
         public int port { get; set; }
         public string username { get; set; }
         public string password { get; set; }
 
-        public SSHServer(AppSettings appSettings)
+        public RemoteServer(AppSettings appSettings)
         {
             this.host = appSettings.sshServer.host; ;
             this.port = Convert.ToInt32(appSettings.sshServer.port);

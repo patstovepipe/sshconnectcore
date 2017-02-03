@@ -2,7 +2,7 @@
 
 namespace SSHConnectCore.Models.Commands
 {
-    public class KillProcessCommand : Command
+    public class KillProcessCommand : SSHCommand
     {
         public override SshCommand RunDetails(SshClient client, string[] args)
         {
