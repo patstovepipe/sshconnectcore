@@ -1,6 +1,5 @@
 ﻿using SSHConnectCore.Configuration;
 using System;
-using System.IO;
 
 namespace SSHConnectCore.Models
 {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace SSHConnectCore.Extensions
 {

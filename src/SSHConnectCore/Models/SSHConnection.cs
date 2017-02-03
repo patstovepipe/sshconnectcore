@@ -1,11 +1,5 @@
 ﻿using Renci.SshNet;
-using Renci.SshNet.Common;
 using SSHConnectCore.Configuration;
-using SSHConnectCore.Utilities;
-using System;
-using System.IO;
-using System.Linq;
-using Newtonsoft.Json;
 using SSHConnectCore.Models.Commands;
 
 namespace SSHConnectCore.Models

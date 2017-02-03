@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Renci.SshNet;
-using System.IO;
+﻿using Renci.SshNet;
 
 namespace SSHConnectCore.Models.Commands
 {
