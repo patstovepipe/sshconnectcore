@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Renci.SshNet;
 using SSHConnectCore.Configuration;
 using System.IO;
+using SSHConnectCore.Models.SCP.SCPCommands;
 
 namespace SSHConnectCore.Models
 {
@@ -13,18 +14,20 @@ namespace SSHConnectCore.Models
     {
         public SCPConnection(AppSettings appSettings) : base(appSettings) { }
 
-        public void Backup()
+        public bool DownloadCommand()
         {
-            using (ScpClient client = new ScpClient(server.host, server.port, server.username, server.password))
-            {
-                client.Connect();
-                FileInfo file = new FileInfo(AppContext.BaseDirectory + "\\test.txt");
-                using (var fs = file.Open(FileMode.Create, FileAccess.ReadWrite))
-                {
-                    client.Download("/home/patrick/test.txt", fs);
-                }
-                client.Disconnect();
-            }
+            SCPCommand command = new DownloadCommand();
+            return RunCommand(command);
+        }
+
+        private bool RunCommand(SCPCommand command, string[] args = null)
+        {
+            command.server = this.server;
+
+            if (args != null)
+                return command.Run(args);
+            else
+                return command.Run();
         }
     }
 }

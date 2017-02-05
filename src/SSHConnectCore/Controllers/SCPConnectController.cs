@@ -20,10 +20,10 @@ namespace SSHConnectCore.Controllers
             this.scpConnection = new SCPConnection(this.appSettings);
         }
 
-        public IActionResult Backup()
+        public IActionResult Download()
         {
-            scpConnection.Backup();
-            return Json(true);
+            var result = scpConnection.DownloadCommand();
+            return Json(result);
         }
     }
 }
