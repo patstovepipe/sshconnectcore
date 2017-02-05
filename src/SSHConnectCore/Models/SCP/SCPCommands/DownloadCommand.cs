@@ -11,10 +11,10 @@ namespace SSHConnectCore.Models.SCP.SCPCommands
     {
         public override void RunDetails(ScpClient client, string[] args = null)
         {
-            FileInfo file = new FileInfo(AppContext.BaseDirectory + "\\test.txt");
+            FileInfo file = new FileInfo(AppContext.BaseDirectory + "\\test-download.txt");
             using (var fs = file.Open(FileMode.Create, FileAccess.ReadWrite))
             {
-                client.Download("/test.txt", fs);
+                client.Download("/home/patrick/test-download.txt", fs);
             }
         }
     }

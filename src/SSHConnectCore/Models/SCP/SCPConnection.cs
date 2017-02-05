@@ -20,6 +20,12 @@ namespace SSHConnectCore.Models
             return RunCommand(command);
         }
 
+        public bool UploadCommand()
+        {
+            SCPCommand command = new UploadCommand();
+            return RunCommand(command);
+        }
+
         private bool RunCommand(SCPCommand command, string[] args = null)
         {
             command.server = this.server;

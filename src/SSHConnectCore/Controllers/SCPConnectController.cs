@@ -25,5 +25,11 @@ namespace SSHConnectCore.Controllers
             var result = scpConnection.DownloadCommand();
             return Json(result);
         }
+
+        public IActionResult Upload()
+        {
+            var result = scpConnection.UploadCommand();
+            return Json(result);
+        }
     }
 }
