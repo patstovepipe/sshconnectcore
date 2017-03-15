@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Renci.SshNet;
-using SSHConnectCore.Configuration;
-using System.IO;
+﻿using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.SCP.SCPCommands;
 
 namespace SSHConnectCore.Models
@@ -14,10 +7,10 @@ namespace SSHConnectCore.Models
     {
         public SCPConnection(AppSettings appSettings) : base(appSettings) { }
 
-        public bool DownloadCommand()
+        public bool DownloadCommand(object[] args)
         {
             SCPCommand command = new DownloadCommand();
-            return RunCommand(command);
+            return RunCommand(command, args);
         }
 
         public bool UploadCommand()
@@ -26,8 +19,9 @@ namespace SSHConnectCore.Models
             return RunCommand(command);
         }
 
-        private bool RunCommand(SCPCommand command, string[] args = null)
+        private bool RunCommand(SCPCommand command, object[] args = null)
         {
+            command.downloadDirectory = this.appSettings.downloadDirectory;
             command.server = this.server;
 
             if (args != null)

@@ -1,12 +1,14 @@
 ﻿using Renci.SshNet;
 
-namespace SSHConnectCore.Models.Commands
+namespace SSHConnectCore.Models.SSH.SSHCommands
 {
     abstract public class SSHCommand : Command
     {
-        public SshCommand Run(string[] args = null)
+        public string downloadDirectory { get; set; }
+
+        public object Run(object[] args = null)
         {
-            SshCommand result;
+            object result;
             using (SshClient client = new SshClient(server.host, server.port, server.username, server.password))
             {
                 client.Connect();
@@ -16,6 +18,6 @@ namespace SSHConnectCore.Models.Commands
             return result;
         }
 
-        abstract public SshCommand RunDetails(SshClient client, string[] args = null);
+        abstract public object RunDetails(SshClient client, object[] args = null);
     }
 }

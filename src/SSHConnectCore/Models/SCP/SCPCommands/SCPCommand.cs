@@ -1,15 +1,14 @@
 ﻿using Renci.SshNet;
 using SSHConnectCore.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SSHConnectCore.Models.SCP.SCPCommands
 {
     abstract public class SCPCommand : Command
     {
-        public bool Run(string[] args = null)
+        public string downloadDirectory { get; set; }
+
+        public bool Run(object[] args = null)
         {
             var result = false;
 
@@ -31,6 +30,6 @@ namespace SSHConnectCore.Models.SCP.SCPCommands
             return result;
         }
 
-        abstract public void RunDetails(ScpClient client, string[] args = null);
+        abstract public void RunDetails(ScpClient client, object[] args = null);
     }
 }

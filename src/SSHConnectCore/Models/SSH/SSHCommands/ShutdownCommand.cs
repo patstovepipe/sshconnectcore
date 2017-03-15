@@ -1,10 +1,10 @@
 ﻿using Renci.SshNet;
 
-namespace SSHConnectCore.Models.Commands
+namespace SSHConnectCore.Models.SSH.SSHCommands
 {
     public class ShutdownCommand : SSHCommand
     {
-        public override SshCommand RunDetails(SshClient client, string[] args = null)
+        public override object RunDetails(SshClient client, object[] args = null)
         {
             return client.RunCommand($"echo {server.password} | sudo -S shutdown now");
         }

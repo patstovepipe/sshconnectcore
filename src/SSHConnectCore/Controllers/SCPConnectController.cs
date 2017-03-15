@@ -2,10 +2,8 @@
 using Microsoft.Extensions.Options;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models;
-using System;
+using SSHConnectCore.Models.Backup;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SSHConnectCore.Controllers
 {
@@ -22,7 +20,23 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Download()
         {
-            var result = scpConnection.DownloadCommand();
+            var backupDetailsList = new List<BackupDetails>();
+
+            var fileBackupDetails = new FileBackupDetails();
+            fileBackupDetails.BaseDirectory = "/home/patrick/";
+            fileBackupDetails.FileName = "test-download.txt";
+            fileBackupDetails.ActualFileName = "test-download.txt";
+            backupDetailsList.Add(fileBackupDetails);
+
+            var directoryBackupDetails = new DirectoryBackupDetails();
+            directoryBackupDetails.BaseDirectory = "/home/patrick/";
+            directoryBackupDetails.Directory = "test";
+            directoryBackupDetails.ActualDirectory = "test/.";
+            backupDetailsList.Add(directoryBackupDetails);
+
+            var args = new object[] { backupDetailsList };
+
+            var result = scpConnection.DownloadCommand(args);
             return Json(result);
         }
 

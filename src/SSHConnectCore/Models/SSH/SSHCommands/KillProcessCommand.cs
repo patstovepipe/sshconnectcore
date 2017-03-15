@@ -1,10 +1,10 @@
 ﻿using Renci.SshNet;
 
-namespace SSHConnectCore.Models.Commands
+namespace SSHConnectCore.Models.SSH.SSHCommands
 {
     public class KillProcessCommand : SSHCommand
     {
-        public override SshCommand RunDetails(SshClient client, string[] args)
+        public override object RunDetails(SshClient client, object[] args)
         {
             return client.RunCommand("pkill " + args[0]);
         }

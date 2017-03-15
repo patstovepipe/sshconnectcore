@@ -1,11 +1,13 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using SSHConnectCore.Models;
 using Microsoft.Extensions.Options;
 using SSHConnectCore.Configuration;
 using System.Linq;
 using Renci.SshNet.Common;
 using Renci.SshNet;
+using System.Collections.Generic;
+using SSHConnectCore.Models.Backup;
+using SSHConnectCore.Models.SSH;
 
 namespace SSHConnectCore.Controllers
 {
@@ -31,7 +33,7 @@ namespace SSHConnectCore.Controllers
 
             try
             {
-                result = sshConnection.RestartCommand();
+                result = (SshCommand)sshConnection.RestartCommand();
             }
             catch (SshConnectionException)
             {
@@ -47,7 +49,7 @@ namespace SSHConnectCore.Controllers
 
             try
             {
-                result = sshConnection.ShutdownCommand();
+                result = (SshCommand)sshConnection.ShutdownCommand();
             }
             catch (SshConnectionException)
             {
@@ -65,7 +67,7 @@ namespace SSHConnectCore.Controllers
             }
             else
             {
-                var result = sshConnection.KillProcessCommand(new string[] { id });
+                var result = (SshCommand)sshConnection.KillProcessCommand(new string[] { id });
                 if (result.ExitStatus == 0)
                     return Json("Success");
                 else
@@ -76,6 +78,58 @@ namespace SSHConnectCore.Controllers
         public IActionResult KillProcessList()
         {
             return Json(sshConnection.killProcessList);
+        }
+
+        public IActionResult Download()
+        {
+            var backupDetailsList = new List<BackupDetails>();
+
+            var fileBackupDetails = new FileBackupDetails();
+            fileBackupDetails.BaseDirectory = "/home/patrick/";
+            fileBackupDetails.FileName = "test-download.txt";
+            fileBackupDetails.ActualFileName = "test-download.txt";
+            backupDetailsList.Add(fileBackupDetails);
+
+            var directoryBackupDetails = new DirectoryBackupDetails();
+            directoryBackupDetails.BaseDirectory = "/home/patrick/";
+            directoryBackupDetails.Directory = "test";
+            directoryBackupDetails.ActualDirectory = "test";
+            backupDetailsList.Add(directoryBackupDetails);
+
+            var args = new object[] { backupDetailsList };
+
+            var results = (List<bool>)sshConnection.DownloadCommand(args);
+
+            if (results.All(r => r))
+                return Json("Success");
+            else
+                return Json("Error");
+        }
+
+        public IActionResult Upload()
+        {
+            var backupDetailsList = new List<BackupDetails>();
+
+            var fileBackupDetails = new FileBackupDetails();
+            fileBackupDetails.BaseDirectory = "/home/patrick/";
+            fileBackupDetails.FileName = "test-upload.txt";
+            fileBackupDetails.ActualFileName = "test-upload.txt";
+            backupDetailsList.Add(fileBackupDetails);
+
+            var directoryBackupDetails = new DirectoryBackupDetails();
+            directoryBackupDetails.BaseDirectory = "/home/patrick/";
+            directoryBackupDetails.Directory = "test-upload";
+            directoryBackupDetails.ActualDirectory = "test-upload";
+            backupDetailsList.Add(directoryBackupDetails);
+
+            var args = new object[] { backupDetailsList };
+
+            var results = (List<bool>)sshConnection.UploadCommand(args);
+
+            if (results.All(r => r))
+                return Json("Success");
+            else
+                return Json("Error");
         }
 
         // for testing exception handling

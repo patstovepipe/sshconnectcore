@@ -8,7 +8,8 @@
     {
         public SSHServer sshServer { get; set; }
         public API api { get; set; }
-        public string killprocesslist { get; set; }
+        public string killProcessList { get; set; }
+        public string downloadDirectory { get; set; }
     }
 
     public class SSHServer
