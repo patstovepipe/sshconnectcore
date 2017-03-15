@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models;
-using SSHConnectCore.Models.Backup;
+using SSHConnectCore.Models.BackupDetails;
 using System.Collections.Generic;
 
 namespace SSHConnectCore.Controllers
@@ -20,15 +20,15 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Download()
         {
-            var backupDetailsList = new List<BackupDetails>();
+            var backupDetailsList = new List<BackupDetail>();
 
-            var fileBackupDetails = new FileBackupDetails();
+            var fileBackupDetails = new FileBackupDetail();
             fileBackupDetails.BaseDirectory = "/home/patrick/";
             fileBackupDetails.FileName = "test-download.txt";
             fileBackupDetails.ActualFileName = "test-download.txt";
             backupDetailsList.Add(fileBackupDetails);
 
-            var directoryBackupDetails = new DirectoryBackupDetails();
+            var directoryBackupDetails = new DirectoryBackupDetail();
             directoryBackupDetails.BaseDirectory = "/home/patrick/";
             directoryBackupDetails.Directory = "test";
             directoryBackupDetails.ActualDirectory = "test/.";

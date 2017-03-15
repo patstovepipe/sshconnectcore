@@ -6,7 +6,7 @@ using System.Linq;
 using Renci.SshNet.Common;
 using Renci.SshNet;
 using System.Collections.Generic;
-using SSHConnectCore.Models.Backup;
+using SSHConnectCore.Models.BackupDetails;
 using SSHConnectCore.Models.SSH;
 
 namespace SSHConnectCore.Controllers
@@ -82,15 +82,15 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Download()
         {
-            var backupDetailsList = new List<BackupDetails>();
+            var backupDetailsList = new List<BackupDetail>();
 
-            var fileBackupDetails = new FileBackupDetails();
+            var fileBackupDetails = new FileBackupDetail();
             fileBackupDetails.BaseDirectory = "/home/patrick/";
             fileBackupDetails.FileName = "test-download.txt";
             fileBackupDetails.ActualFileName = "test-download.txt";
             backupDetailsList.Add(fileBackupDetails);
 
-            var directoryBackupDetails = new DirectoryBackupDetails();
+            var directoryBackupDetails = new DirectoryBackupDetail();
             directoryBackupDetails.BaseDirectory = "/home/patrick/";
             directoryBackupDetails.Directory = "test";
             directoryBackupDetails.ActualDirectory = "test";
@@ -108,15 +108,15 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Upload()
         {
-            var backupDetailsList = new List<BackupDetails>();
+            var backupDetailsList = new List<BackupDetail>();
 
-            var fileBackupDetails = new FileBackupDetails();
+            var fileBackupDetails = new FileBackupDetail();
             fileBackupDetails.BaseDirectory = "/home/patrick/";
             fileBackupDetails.FileName = "test-upload.txt";
             fileBackupDetails.ActualFileName = "test-upload.txt";
             backupDetailsList.Add(fileBackupDetails);
 
-            var directoryBackupDetails = new DirectoryBackupDetails();
+            var directoryBackupDetails = new DirectoryBackupDetail();
             directoryBackupDetails.BaseDirectory = "/home/patrick/";
             directoryBackupDetails.Directory = "test-upload";
             directoryBackupDetails.ActualDirectory = "test-upload";

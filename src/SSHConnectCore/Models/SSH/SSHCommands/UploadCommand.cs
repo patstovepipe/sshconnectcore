@@ -1,6 +1,6 @@
 ﻿using System;
 using Renci.SshNet;
-using SSHConnectCore.Models.Backup;
+using SSHConnectCore.Models.BackupDetails;
 using System.Collections.Generic;
 
 namespace SSHConnectCore.Models.SSH.SSHCommands
@@ -9,14 +9,14 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
     {
         public override object RunDetails(SshClient client, object[] args = null)
         {
-            var backupDetailsList = (List<BackupDetails>)args[0];
+            var backupDetailList = (List<BackupDetail>)args[0];
             var results = new List<bool>();
 
-            foreach (var tmpBackupDetails in backupDetailsList)
+            foreach (var tmpBackupDetails in backupDetailList)
             {
-                if (tmpBackupDetails.GetType() == typeof(FileBackupDetails))
+                if (tmpBackupDetails.GetType() == typeof(FileBackupDetail))
                 {
-                    var backupDetails = (FileBackupDetails)tmpBackupDetails;
+                    var backupDetails = (FileBackupDetail)tmpBackupDetails;
 
                     var source = this.downloadDirectory + backupDetails.ActualFileName;
                     var target = backupDetails.BaseDirectory;
@@ -25,9 +25,9 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
                     var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
                     results.Add(result.ExitStatus == 0);
                 }
-                else if (tmpBackupDetails.GetType() == typeof(DirectoryBackupDetails))
+                else if (tmpBackupDetails.GetType() == typeof(DirectoryBackupDetail))
                 {
-                    var backupDetails = (DirectoryBackupDetails)tmpBackupDetails;
+                    var backupDetails = (DirectoryBackupDetail)tmpBackupDetails;
 
                     var source = this.downloadDirectory + backupDetails.ActualDirectory;
                     var target = backupDetails.BaseDirectory;

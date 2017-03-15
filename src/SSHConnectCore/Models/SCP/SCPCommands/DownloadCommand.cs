@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 using Renci.SshNet;
 using System.IO;
-using SSHConnectCore.Models.Backup;
-
+using SSHConnectCore.Models.BackupDetails;
 namespace SSHConnectCore.Models.SCP.SCPCommands
 {
     public class DownloadCommand : SCPCommand
     {
         public override void RunDetails(ScpClient client, object[] args = null)
         {
-            var backupDetailsList = (List<BackupDetails>)args[0];
+            var backupDetailList = (List<BackupDetail>)args[0];
 
-            foreach(var tmpBackupDetails in backupDetailsList)
+            foreach(var tmpBackupDetails in backupDetailList)
             {
-                if (tmpBackupDetails.GetType() == typeof(FileBackupDetails))
+                if (tmpBackupDetails.GetType() == typeof(FileBackupDetail))
                 {
-                    var backupDetails = (FileBackupDetails)tmpBackupDetails;
+                    var backupDetails = (FileBackupDetail)tmpBackupDetails;
 
                     FileInfo file = new FileInfo(this.downloadDirectory + backupDetails.FileName);
 
@@ -24,9 +23,9 @@ namespace SSHConnectCore.Models.SCP.SCPCommands
                         client.Download(backupDetails.BaseDirectory + backupDetails.ActualFileName, fs);
                     }
                 }
-                else if (tmpBackupDetails.GetType() == typeof(DirectoryBackupDetails))
+                else if (tmpBackupDetails.GetType() == typeof(DirectoryBackupDetail))
                 {
-                    var backupDetails = (DirectoryBackupDetails)tmpBackupDetails;
+                    var backupDetails = (DirectoryBackupDetail)tmpBackupDetails;
 
                     DirectoryInfo directory = new DirectoryInfo(this.downloadDirectory + backupDetails.Directory);
                     if (!directory.Exists)
