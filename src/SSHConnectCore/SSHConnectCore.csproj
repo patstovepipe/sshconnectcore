@@ -34,10 +34,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Dashboard\" />
-  </ItemGroup>
-
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <Exec Command="bower install" />
     <Exec Command="dotnet bundle" />

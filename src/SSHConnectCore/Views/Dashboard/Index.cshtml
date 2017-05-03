@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div>
+            <h1 class="page-header">Dashboard</h1>
+
+            <div class="row">
+                <div class="col-md-4 block">
+                    <a class="btn circle btn-primary" asp-controller="SSHConnect" asp-action="Shutdown"><p>Shutdown</p></a>
+                </div>
+                <div class="col-md-4 block">
+                    <a class="btn circle btn-primary" asp-controller="SSHConnect" asp-action="Restart"><p>Restart</p></a>
+                </div>
+                <div class="col-md-4 block">
+                    <a class="btn circle btn-primary" asp-controller="Dashboard" asp-action="KillProcess" asp-route-id="lxterminal"><p>Kill Process</p></a>
+                    @*@Html.ActionLink("Kill Process", "KillProcess", "Dashboard", null, new { @class = "btn circle btn-primary" })*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
