@@ -1,5 +1,4 @@
-﻿using System;
-using Renci.SshNet;
+﻿using Renci.SshNet;
 using SSHConnectCore.Models.BackupDetails;
 using System.Collections.Generic;
 

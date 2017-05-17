@@ -36,6 +36,7 @@ textarea {
     }
 }
 
+/* For navigation bar on top of page */
 @media (min-width: 768px) {
     .navbar .navbar-nav {
         display: inline-block;
@@ -48,6 +49,7 @@ textarea {
     }
 }
 
+/* For circles on dashboard*/
 .btn-circle {
     width: 200px;
     height: 200px;
@@ -76,6 +78,22 @@ textarea {
     vertical-align: middle;
     display: table-cell;
     font-size: 20px;
+}
+
+.circle div p {
+    vertical-align: bottom;
+    display: table-cell;
+    font-size: 20px;
+}
+
+.circle div select {
+    vertical-align: middle;
+    display: table-cell;
+    width: 110px;
+}
+
+.circle div {
+    display: table-row;
 }
 
 /** {

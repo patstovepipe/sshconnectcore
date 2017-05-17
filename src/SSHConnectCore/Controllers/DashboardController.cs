@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SSHConnectCore.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SSHConnectCore.Controllers
 {
@@ -30,20 +27,86 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.KillProcessSelectList = KillProcessSelectList();
+
             return View();
+        }
+
+
+        public IActionResult Shutdown()
+        {
+            string result = APICall();
+            result = JsonConvert.DeserializeObject(result).ToString();
+            SetMessage(result);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Restart()
+        {
+            string result = APICall();
+            result = JsonConvert.DeserializeObject(result).ToString();
+            SetMessage(result);
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult KillProcess(string id)
         {
-            using (var client = new HttpClient())
-            {
-                var model = client
-                            .GetAsync(APIURL)
-                            .Result
-                            .Content.ReadAsStringAsync().Result;
-            }
+            string result = APICall();
+            result = JsonConvert.DeserializeObject(result).ToString();
+            SetMessage(result);
 
             return RedirectToAction("Index");
+        }
+
+        private string APICall(string url = null)
+        {
+            using (var client = new HttpClient())
+            {
+                return client
+                    .GetAsync(url ?? APIURL)
+                    .Result
+                    .Content.ReadAsStringAsync().Result;
+            }
+        }
+
+        private void SetMessage(string result, string successMessage = "", string errorMessage = "")
+        {
+            switch (result)
+            {
+                case "Success":
+                    TempData["MessageStatus"] = result;
+                    TempData["MessageDetails"] = successMessage;
+                    break;
+                case "Error":
+                    TempData["MessageStatus"] = result;
+                    TempData["MessageDetails"] = errorMessage;
+                    break;
+                default:
+                    TempData["MessageStatus"] = "Error";
+                    TempData["MessageDetails"] = "An error ocurred.";
+                    break;
+            }
+        }
+        
+        private List<SelectListItem> KillProcessSelectList()
+        {
+            var killProcessListURL = APIURL + apiControllerName + "/KillProcessList";
+            string result = APICall(killProcessListURL);
+            List<string> killProcessList = JsonConvert.DeserializeObject<List<string>>(result);
+
+            List<SelectListItem> killProcessSelectList = new List<SelectListItem>();
+            foreach (string p in killProcessList)
+            {
+                killProcessSelectList.Add(new SelectListItem
+                {
+                    Text = p,
+                    Value = p
+                });
+            }
+
+            return killProcessSelectList;
         }
     }
 }

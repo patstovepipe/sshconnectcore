@@ -29,34 +29,30 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Restart()
         {
-            SshCommand result;
-
             try
             {
-                result = (SshCommand)sshConnection.RestartCommand();
+                sshConnection.RestartCommand();
             }
             catch (SshConnectionException)
             {
                 return Json("Success");
             }
 
-            return Json(result.Result);
+            return Json("Error");
         }
 
         public IActionResult Shutdown()
         {
-            SshCommand result;
-
             try
             {
-                result = (SshCommand)sshConnection.ShutdownCommand();
+                sshConnection.ShutdownCommand();
             }
             catch (SshConnectionException)
             {
                 return Json("Success");
             }
 
-            return Json(result.Result);
+            return Json("Error");
         }
 
         public IActionResult KillProcess(string id)
@@ -67,11 +63,20 @@ namespace SSHConnectCore.Controllers
             }
             else
             {
-                var result = (SshCommand)sshConnection.KillProcessCommand(new string[] { id });
-                if (result.ExitStatus == 0)
-                    return Json("Success");
+                var result = sshConnection.KillProcessCommand(new string[] { id });
+                SshCommand sshCommandResult;
+
+                if (result.GetType() == typeof(SshCommand))
+                {
+                    sshCommandResult = (SshCommand)result;
+
+                    if (sshCommandResult.ExitStatus == 0)
+                        return Json("Success");
+                    else
+                        return Json("Error");
+                }
                 else
-                    return Json("Error");
+                    return Json(result);
             }
         }
 

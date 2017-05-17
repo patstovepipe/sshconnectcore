@@ -1,6 +1,10 @@
 ﻿using Renci.SshNet;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.SSH.SSHCommands;
+using SSHConnectCore.Utilities;
+using System;
+using System.Net.Sockets;
+using System.Reflection;
 
 namespace SSHConnectCore.Models.SSH
 {
@@ -61,10 +65,26 @@ namespace SSHConnectCore.Models.SSH
             command.downloadDirectory = this.appSettings.downloadDirectory;
             command.server = this.server;
 
-            if (args != null)
-                return command.Run(args);
-            else
-                return command.Run();
+            try
+            {
+                if (args != null)
+                    return command.Run(args);
+                else
+                    return command.Run();
+            }
+            catch (AggregateException ex)
+            {
+                foreach (Exception x in ex.InnerExceptions)
+                {
+                    if (x.GetType().GetTypeInfo().BaseType == typeof(SocketException))
+                    {
+                        Logger.Log(x.GetType().FullName, x.GetType().AssemblyQualifiedName);
+                        return "Error";
+                    }
+                }
+
+                throw ex;
+            }
         }
     }
 }

@@ -1,0 +1,18 @@
+﻿@{
+    if (!string.IsNullOrEmpty(TempData["MessageStatus"]?.ToString() ?? ""))
+    {
+        switch (TempData["MessageStatus"].ToString())
+        {
+            case "Success":
+                <div class="alert alert-success">
+                    <strong>Success!</strong> @(TempData["MessageDetails"]?.ToString() ?? "")
+                </div>
+                break;
+            case "Error":
+                <div class="alert alert-danger">
+                    <strong>Error!</strong> @(TempData["MessageDetails"]?.ToString() ?? "")
+                </div>
+                break;
+        }
+    }
+}
