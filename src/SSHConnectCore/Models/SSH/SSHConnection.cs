@@ -22,11 +22,11 @@ namespace SSHConnectCore.Models.SSH
             bool hasConnection = false;
             using (SshClient client = new SshClient(server.host, server.port, server.username, server.password))
             {
+                client.ConnectionInfo.Timeout = TimeSpan.FromSeconds(1);
                 client.Connect();
                 hasConnection = client.IsConnected;
                 client.Disconnect();
             }
-
             return hasConnection;
         }
 
@@ -78,7 +78,6 @@ namespace SSHConnectCore.Models.SSH
                 {
                     if (x.GetType().GetTypeInfo().BaseType == typeof(SocketException))
                     {
-                        Logger.Log(x.GetType().FullName, x.GetType().AssemblyQualifiedName);
                         return "Error";
                     }
                 }

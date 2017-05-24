@@ -8,6 +8,9 @@ using Renci.SshNet;
 using System.Collections.Generic;
 using SSHConnectCore.Models.BackupDetails;
 using SSHConnectCore.Models.SSH;
+using SSHConnectCore.Utilities;
+using System.Reflection;
+using System.Net.Sockets;
 
 namespace SSHConnectCore.Controllers
 {
@@ -24,7 +27,30 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult HasConnection()
         {
-            return Json(sshConnection.HasConnection());
+            try
+            {
+                return Json(sshConnection.HasConnection());
+            }
+            catch (SshConnectionException)
+            {
+                return Json(false);
+            }
+            catch (SshOperationTimeoutException)
+            {
+                return Json(false);
+            }
+            catch (AggregateException ex)
+            {
+                foreach (Exception x in ex.InnerExceptions)
+                {
+                    if (x.GetType().GetTypeInfo().BaseType == typeof(SocketException))
+                    {
+                        return Json(false);
+                    }
+                }
+
+                throw ex;
+            }
         }
 
         public IActionResult Restart()

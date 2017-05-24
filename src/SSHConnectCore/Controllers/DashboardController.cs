@@ -5,6 +5,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SSHConnectCore.Models.Dashboard;
 
 namespace SSHConnectCore.Controllers
 {
@@ -29,7 +30,9 @@ namespace SSHConnectCore.Controllers
         {
             ViewBag.KillProcessSelectList = KillProcessSelectList();
 
-            return View();
+            var vm = new MessageViewModel();
+
+            return View(vm);
         }
 
 
@@ -37,27 +40,27 @@ namespace SSHConnectCore.Controllers
         {
             string result = APICall();
             result = JsonConvert.DeserializeObject(result).ToString();
-            SetMessage(result);
+            var vm = SetMessage(result);
 
-            return RedirectToAction("Index");
+            return PartialView("MessagesPartial", vm);
         }
 
         public IActionResult Restart()
         {
             string result = APICall();
             result = JsonConvert.DeserializeObject(result).ToString();
-            SetMessage(result);
+            var vm = SetMessage(result);
 
-            return RedirectToAction("Index");
+            return PartialView("MessagesPartial", vm);
         }
 
         public IActionResult KillProcess(string id)
         {
             string result = APICall();
             result = JsonConvert.DeserializeObject(result).ToString();
-            SetMessage(result);
+            var vm = SetMessage(result);
 
-            return RedirectToAction("Index");
+            return PartialView("MessagesPartial", vm);
         }
 
         private string APICall(string url = null)
@@ -71,25 +74,45 @@ namespace SSHConnectCore.Controllers
             }
         }
 
-        private void SetMessage(string result, string successMessage = "", string errorMessage = "")
+        private MessageViewModel SetMessage(string result, string successMessage = "", string errorMessage = "")
         {
+            var vm = new MessageViewModel();
+
             switch (result)
             {
                 case "Success":
-                    TempData["MessageStatus"] = result;
-                    TempData["MessageDetails"] = successMessage;
+                    vm.Status = result;
+                    vm.Details = successMessage;
                     break;
                 case "Error":
-                    TempData["MessageStatus"] = result;
+                    vm.Status = result;
                     TempData["MessageDetails"] = errorMessage;
                     break;
                 default:
-                    TempData["MessageStatus"] = "Error";
-                    TempData["MessageDetails"] = "An error ocurred.";
+                    vm.Status = "Error";
+                    vm.Details = "An error ocurred.";
                     break;
             }
+
+            return vm;
+
+            //switch (result)
+            //{
+            //    case "Success":
+            //        TempData["MessageStatus"] = result;
+            //        TempData["MessageDetails"] = successMessage;
+            //        break;
+            //    case "Error":
+            //        TempData["MessageStatus"] = result;
+            //        TempData["MessageDetails"] = errorMessage;
+            //        break;
+            //    default:
+            //        TempData["MessageStatus"] = "Error";
+            //        TempData["MessageDetails"] = "An error ocurred.";
+            //        break;
+            //}
         }
-        
+
         private List<SelectListItem> KillProcessSelectList()
         {
             var killProcessListURL = APIURL + apiControllerName + "/KillProcessList";

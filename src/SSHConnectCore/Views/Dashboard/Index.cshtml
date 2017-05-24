@@ -3,37 +3,61 @@
 }
 
 <div class="container-fluid">
-    <div class="row">
-        <div>
-            <h1 class="page-header">Dashboard</h1>
 
-            @Html.Partial("MessagesPartial")
+            <h1 class="page-header">Dashboard</h1>
+            
+            <div id="messages-div">@Html.Partial("MessagesPartial")</div>
 
             <div class="row">
                 <div class="col-md-4 block">
-                    <a class="btn circle btn-primary" asp-controller="Dashboard" asp-action="Shutdown"><p>Shutdown</p></a>
+                    <div id="shutdown-div" class="btn circle btn-primary"><p>Shutdown</p></div>
                 </div>
                 <div class="col-md-4 block">
-                    <a class="btn circle btn-primary" asp-controller="Dashboard" asp-action="Restart"><p>Restart</p></a>
+                    <div id="restart-div" class="btn circle btn-primary"><p>Restart</p></div>
                 </div>
                 <div class="col-md-4 block">
                     <div id="kp-div" class="btn circle btn-primary">
-                        @*<a asp-controller="Dashboard" asp-action="KillProcess" asp-route-id="lxterminal">*@<div><p>Kill Process</p></div>@*</a>*@
+                        <div><p>Kill Process</p></div>
                         <div><select id="kp-select" asp-items="@ViewBag.KillProcessSelectList" class="form-control"></select></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
 </div>
 
 <script>
     $(function () {
+        $('#shutdown-div').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("Shutdown", "Dashboard")',
+                success: function (data) {
+                    $('#messages-div').html(data);
+                }
+            });
+        });
+
+        $('#restart-div').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("Restart", "Dashboard")',
+                success: function (data) {
+                    $('#messages-div').html(data);
+                }
+            });
+        });
+
         $('#kp-div').click(function (e) {
             if ($(e.target).is('#kp-select')) {
                 return;
             }
-            window.location.href = '@Url.Action("KillProcess", "Dashboard")/' + $('#kp-select').find(':selected').text();;
+
+            $.ajax({
+                url: '@Url.Action("KillProcess", "Dashboard")/' + $('#kp-select').find(':selected').text(),
+                success: function (data) {
+                    $('#messages-div').html(data);
+                }
+            });
         });
+
+
     });
 </script>

@@ -1,16 +1,19 @@
-﻿@{
-    if (!string.IsNullOrEmpty(TempData["MessageStatus"]?.ToString() ?? ""))
+﻿@using SSHConnectCore.Models.Dashboard;
+@model MessageViewModel
+
+@{
+    if (!string.IsNullOrEmpty(Model.Status?.ToString() ?? ""))
     {
-        switch (TempData["MessageStatus"].ToString())
+        switch (Model.Status.ToString())
         {
             case "Success":
                 <div class="alert alert-success">
-                    <strong>Success!</strong> @(TempData["MessageDetails"]?.ToString() ?? "")
+                    <strong>Success!</strong> @(Model.Details?.ToString() ?? "")
                 </div>
                 break;
             case "Error":
                 <div class="alert alert-danger">
-                    <strong>Error!</strong> @(TempData["MessageDetails"]?.ToString() ?? "")
+                    <strong>Error!</strong> @(Model.Details?.ToString() ?? "")
                 </div>
                 break;
         }
