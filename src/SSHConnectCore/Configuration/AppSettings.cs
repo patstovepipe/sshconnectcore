@@ -10,6 +10,7 @@
         public API api { get; set; }
         public string killProcessList { get; set; }
         public string downloadDirectory { get; set; }
+        public string serverDirectory { get; set; }
     }
 
     public class SSHServer

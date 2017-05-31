@@ -2,7 +2,7 @@
 @model MessageViewModel
 
 @{
-    if (!string.IsNullOrEmpty(Model.Status?.ToString() ?? ""))
+    if (Model != null && !string.IsNullOrEmpty(Model.Status?.ToString() ?? ""))
     {
         switch (Model.Status.ToString())
         {

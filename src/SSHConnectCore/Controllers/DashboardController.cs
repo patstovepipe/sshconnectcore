@@ -29,10 +29,7 @@ namespace SSHConnectCore.Controllers
         public IActionResult Index()
         {
             ViewBag.KillProcessSelectList = KillProcessSelectList();
-
-            var vm = new MessageViewModel();
-
-            return View(vm);
+            return View();
         }
 
 
@@ -95,22 +92,6 @@ namespace SSHConnectCore.Controllers
             }
 
             return vm;
-
-            //switch (result)
-            //{
-            //    case "Success":
-            //        TempData["MessageStatus"] = result;
-            //        TempData["MessageDetails"] = successMessage;
-            //        break;
-            //    case "Error":
-            //        TempData["MessageStatus"] = result;
-            //        TempData["MessageDetails"] = errorMessage;
-            //        break;
-            //    default:
-            //        TempData["MessageStatus"] = "Error";
-            //        TempData["MessageDetails"] = "An error ocurred.";
-            //        break;
-            //}
         }
 
         private List<SelectListItem> KillProcessSelectList()

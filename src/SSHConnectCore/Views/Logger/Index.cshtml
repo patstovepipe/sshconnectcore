@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Logs";
+}
+
+<div class="container-fluid">
+
+    <h1 class="page-header">Logs</h1>
+
+    @foreach (var line in ViewBag.Lines)
+    {
+        <p style="word-wrap: break-word;">@line</p>
+    }
+
+</div>

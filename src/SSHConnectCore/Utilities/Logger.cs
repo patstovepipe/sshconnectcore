@@ -5,7 +5,7 @@ namespace SSHConnectCore.Utilities
 {
     public class Logger
     {
-        public static string logFile = AppContext.BaseDirectory + "\\log.txt";
+        public static string logFile = Path.Combine(AppContext.BaseDirectory, "log.txt");
 
         public static void Log(string tag, string message)
         {
