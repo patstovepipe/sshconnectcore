@@ -1,9 +1,9 @@
 ﻿{
   "Backup": {
-    "FileDirectoryType": "directory",
-    "BackupFolder": "game",
-    "BaseDirectory": "",
-    "FileName": "",
-    "ActualFileName": ""
+    "FileDirectoryType": "file",
+    "BackupFolder": "other",
+    "BaseDirectory": "/home/patrick/",
+    "FileName": "test-download.txt",
+    "ActualFileName": "test-download.txt"
   }
 }
