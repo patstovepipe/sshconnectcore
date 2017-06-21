@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.BackupDetails;
 using SSHConnectCore.Utilities;
@@ -23,25 +24,11 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Index()
         {
-            string serverDir = ServerDir();
+            var serverBackupDetails = ServerBackupDetails();
 
-            List<BackupDetail> backupDetails = new List<BackupDetail>();
-            foreach(string file in Directory.GetFiles(serverDir))
-            {
-                var fileBackupDetail = new FileBackupDetail();
-                fileBackupDetail.BaseDirectory = serverDir;
-                fileBackupDetail.FileName = Path.GetFileName(file);
-                backupDetails.Add(fileBackupDetail);
-            }
-            foreach (string dir in Directory.GetDirectories(serverDir))
-            {
-                var directoryBackupDetail = new DirectoryBackupDetail();
-                directoryBackupDetail.BaseDirectory = serverDir;
-                directoryBackupDetail.Directory = Path.GetFileName(dir);
-                backupDetails.Add(directoryBackupDetail);
-            }
+            var storedBackupDetails = StoredBackupDetails();
 
-            ViewBag.backupDetails = backupDetails;
+            ViewBag.backupDetails = serverBackupDetails;
 
             return View();
         }
@@ -54,6 +41,56 @@ namespace SSHConnectCore.Controllers
                 return this.appSettings.linuxServerDirectory;
             else
                 throw new Exception("Windows or Linux platform not found.");
+        }
+
+        private List<BackupDetail> ServerBackupDetails()
+        {
+            string serverDir = ServerDir();
+
+            List<BackupDetail> serverBackupDetails = new List<BackupDetail>();
+            foreach (string file in Directory.GetFiles(serverDir))
+            {
+                var fileBackupDetail = new BackupDetail();
+                fileBackupDetail.BaseDirectory = serverDir;
+                fileBackupDetail.Name = Path.GetFileName(file);
+                serverBackupDetails.Add(fileBackupDetail);
+            }
+            foreach (string dir in Directory.GetDirectories(serverDir))
+            {
+                var directoryBackupDetail = new BackupDetail();
+                directoryBackupDetail.BaseDirectory = serverDir;
+                directoryBackupDetail.Name = Path.GetFileName(dir);
+                serverBackupDetails.Add(directoryBackupDetail);
+            }
+
+            return serverBackupDetails;
+        }
+
+        private List<BackupDetail> StoredBackupDetails()
+        {
+            var backupDetailsFile = Path.Combine(ServerDir(), "backup_details.json");
+
+            var storedBackupDetails = JsonConvert.DeserializeObject<List<BackupDetail>>(System.IO.File.ReadAllText(backupDetailsFile));
+
+            return storedBackupDetails;
+        }
+
+        private void saveToFile()
+        {
+            var x = new BackupDetail();
+            x.BaseDirectory = "/home/patrick/";
+            x.BackupFolder = "other";
+            x.Name = "test-download.txt";
+            x.ActualName = "test-download.txt";
+            x.Type = BackupDetail.FileSystemType.File;
+
+            var bdl = new List<BackupDetail>();
+
+            bdl.Add(x);
+
+            string strJson = JsonConvert.SerializeObject(bdl);
+
+            System.IO.File.WriteAllText(Path.Combine(ServerDir(), "backup_details.json"), strJson);
         }
     }
 }

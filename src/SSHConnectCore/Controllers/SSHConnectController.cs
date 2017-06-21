@@ -115,16 +115,16 @@ namespace SSHConnectCore.Controllers
         {
             var backupDetailsList = new List<BackupDetail>();
 
-            var fileBackupDetails = new FileBackupDetail();
+            var fileBackupDetails = new BackupDetail();
             fileBackupDetails.BaseDirectory = "/home/patrick/";
-            fileBackupDetails.FileName = "test-download.txt";
-            fileBackupDetails.ActualFileName = "test-download.txt";
+            fileBackupDetails.Name = "test-download.txt";
+            fileBackupDetails.ActualName = "test-download.txt";
             backupDetailsList.Add(fileBackupDetails);
 
-            var directoryBackupDetails = new DirectoryBackupDetail();
+            var directoryBackupDetails = new BackupDetail();
             directoryBackupDetails.BaseDirectory = "/home/patrick/";
-            directoryBackupDetails.Directory = "test";
-            directoryBackupDetails.ActualDirectory = "test";
+            directoryBackupDetails.Name = "test";
+            directoryBackupDetails.ActualName = "test";
             backupDetailsList.Add(directoryBackupDetails);
 
             var args = new object[] { backupDetailsList };
@@ -141,16 +141,16 @@ namespace SSHConnectCore.Controllers
         {
             var backupDetailsList = new List<BackupDetail>();
 
-            var fileBackupDetails = new FileBackupDetail();
+            var fileBackupDetails = new BackupDetail();
             fileBackupDetails.BaseDirectory = "/home/patrick/";
-            fileBackupDetails.FileName = "test-upload.txt";
-            fileBackupDetails.ActualFileName = "test-upload.txt";
+            fileBackupDetails.Name = "test-upload.txt";
+            fileBackupDetails.ActualName = "test-upload.txt";
             backupDetailsList.Add(fileBackupDetails);
 
-            var directoryBackupDetails = new DirectoryBackupDetail();
+            var directoryBackupDetails = new BackupDetail();
             directoryBackupDetails.BaseDirectory = "/home/patrick/";
-            directoryBackupDetails.Directory = "test-upload";
-            directoryBackupDetails.ActualDirectory = "test-upload";
+            directoryBackupDetails.Name = "test-upload";
+            directoryBackupDetails.ActualName = "test-upload";
             backupDetailsList.Add(directoryBackupDetails);
 
             var args = new object[] { backupDetailsList };

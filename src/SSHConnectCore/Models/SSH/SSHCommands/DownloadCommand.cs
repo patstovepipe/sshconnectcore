@@ -11,24 +11,20 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
             var backupDetailList = (List<BackupDetail>)args[0];
             var results = new List<bool>();
 
-            foreach (var tmpBackupDetails in backupDetailList)
+            foreach (var backupDetails in backupDetailList)
             {
-                if (tmpBackupDetails.GetType() == typeof(FileBackupDetail))
+                if (backupDetails.Type == BackupDetail.FileSystemType.File)
                 {
-                    var backupDetails = (FileBackupDetail)tmpBackupDetails;
-
-                    var source = backupDetails.BaseDirectory + backupDetails.ActualFileName;
+                    var source = backupDetails.BaseDirectory + backupDetails.ActualName;
                     var target = this.downloadDirectory;
                     var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
 
                     var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
                     results.Add(result.ExitStatus == 0);
                 }
-                else if (tmpBackupDetails.GetType() == typeof(DirectoryBackupDetail))
+                else if (backupDetails.Type == BackupDetail.FileSystemType.File)
                 {
-                    var backupDetails = (DirectoryBackupDetail)tmpBackupDetails;
-
-                    var source = backupDetails.BaseDirectory + backupDetails.ActualDirectory;
+                    var source = backupDetails.BaseDirectory + backupDetails.ActualName;
                     var target = this.downloadDirectory;
                     var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
 

@@ -1,9 +1,0 @@
-﻿{
-  "Backup": {
-    "FileDirectoryType": "file",
-    "BackupFolder": "other",
-    "BaseDirectory": "/home/patrick/",
-    "FileName": "test-download.txt",
-    "ActualFileName": "test-download.txt"
-  }
-}
