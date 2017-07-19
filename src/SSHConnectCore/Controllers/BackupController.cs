@@ -28,9 +28,40 @@ namespace SSHConnectCore.Controllers
 
             var storedBackupDetails = StoredBackupDetails();
 
-            ViewBag.backupDetails = serverBackupDetails;
+            foreach (var detail in serverBackupDetails.ToList())
+            {
+                var found = storedBackupDetails.Find(d => d.ActualName == detail.Name);
+
+                if (found != null)
+                {
+                    serverBackupDetails.Remove(detail);
+                    found.BackedUp = true;
+                    serverBackupDetails.Add(found);
+                    storedBackupDetails.Remove(found);
+                }
+            }
+
+            serverBackupDetails.AddRange(storedBackupDetails);
+
+            var backupDetails = serverBackupDetails.OrderBy(d => d.Name).ToList();
+
+            ViewBag.backupDetails = backupDetails;
 
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult New()
+        {
+            ViewBag.PageTitle = "New";
+            return View("NewEdit");
+        }
+
+        [HttpPost]
+        public IActionResult New(FileBackupDetail model)
+        {
+            ViewBag.PageTitle = "New";
+            return View("NewEdit");
         }
 
         private string ServerDir()
@@ -51,15 +82,15 @@ namespace SSHConnectCore.Controllers
             foreach (string file in Directory.GetFiles(serverDir))
             {
                 var fileBackupDetail = new BackupDetail();
-                fileBackupDetail.BaseDirectory = serverDir;
                 fileBackupDetail.Name = Path.GetFileName(file);
+                fileBackupDetail.FileSystemType = FileSystemType.File;
                 serverBackupDetails.Add(fileBackupDetail);
             }
             foreach (string dir in Directory.GetDirectories(serverDir))
             {
                 var directoryBackupDetail = new BackupDetail();
-                directoryBackupDetail.BaseDirectory = serverDir;
                 directoryBackupDetail.Name = Path.GetFileName(dir);
+                directoryBackupDetail.FileSystemType = FileSystemType.Directory;
                 serverBackupDetails.Add(directoryBackupDetail);
             }
 
@@ -79,10 +110,10 @@ namespace SSHConnectCore.Controllers
         {
             var x = new BackupDetail();
             x.BaseDirectory = "/home/patrick/";
-            x.BackupFolder = "other";
+            x.BackupDirectory = BackupDirectory.Other;
             x.Name = "test-download.txt";
             x.ActualName = "test-download.txt";
-            x.Type = BackupDetail.FileSystemType.File;
+            x.FileSystemType = FileSystemType.File;
 
             var bdl = new List<BackupDetail>();
 

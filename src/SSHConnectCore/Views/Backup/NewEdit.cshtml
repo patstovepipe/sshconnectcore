@@ -1,0 +1,34 @@
+﻿@using SSHConnectCore.Models.BackupDetails;
+@model  BackupDetail
+@{
+    ViewData["Title"] = "Backup";
+}
+
+<div class="container-fluid">
+
+    <h1 class="page-header">@ViewBag.PageTitle</h1>
+
+    <div id="messages-div">@Html.Partial("MessagesPartial")</div>
+
+    <form asp-controller="Backup" asp-action="New" method="post">
+        @*Type:  <input asp-for="Type" /> <br />*@
+        <div class="form-group">
+            <label for="FileSystemType">File System Type</label>
+            <select asp-for="FileSystemType" asp-items="Html.GetEnumSelectList<FileSystemType>()" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label for="BackupDirectory">Backup Directory</label>
+            <select asp-for="BackupDirectory" asp-items="Html.GetEnumSelectList<BackupDirectory>()" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label for="BaseDirectory">Base Directory</label>
+            <input asp-for="BaseDirectory" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="Name">Name</label>
+            <input asp-for="Name" class="form-control"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <input type="button" value="Back" onclick="location.href='@Url.Action("Index", "Backup")'" class="btn btn-secondary"/>
+    </form>
+</div>

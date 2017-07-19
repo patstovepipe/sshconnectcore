@@ -13,16 +13,22 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Type</th>
+                    <th>File System Type</th>
+                    <th>Backup Directory</th>
+                    <th>Base Directory</th>
                     <th>Name</th>
+                    <th>Backed Up</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var backupDetail in (List<BackupDetail>)ViewBag.backupDetails)
+                @foreach (var detail in (List<BackupDetail>)ViewBag.backupDetails)
                 {
                     <tr>
-                        <td>@backupDetail.Type</td>
-                        <td>@backupDetail.Name</td>
+                        <td>@detail.FileSystemType</td>
+                        <td>@detail.BackupDirectory</td>
+                        <td>@detail.BaseDirectory</td>
+                        <td>@detail.Name</td>
+                        <td>@detail.BackedUp</td>
                     </tr>
                 }
             </tbody>

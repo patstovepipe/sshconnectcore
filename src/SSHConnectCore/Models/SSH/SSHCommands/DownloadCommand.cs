@@ -13,7 +13,7 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
 
             foreach (var backupDetails in backupDetailList)
             {
-                if (backupDetails.Type == BackupDetail.FileSystemType.File)
+                if (backupDetails.FileSystemType == FileSystemType.File)
                 {
                     var source = backupDetails.BaseDirectory + backupDetails.ActualName;
                     var target = this.downloadDirectory;
@@ -22,7 +22,7 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
                     var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
                     results.Add(result.ExitStatus == 0);
                 }
-                else if (backupDetails.Type == BackupDetail.FileSystemType.File)
+                else if (backupDetails.FileSystemType == FileSystemType.File)
                 {
                     var source = backupDetails.BaseDirectory + backupDetails.ActualName;
                     var target = this.downloadDirectory;

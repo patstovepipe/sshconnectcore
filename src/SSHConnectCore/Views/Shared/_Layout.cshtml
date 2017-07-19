@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SSHConnectCore</title>
 
+    @* css libraries *@
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -15,7 +16,9 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    @* end *@
 
+    @* javascript libraries *@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -32,6 +35,7 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+    @* end *@
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -51,7 +55,14 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-left">
                     <li><a asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-                    <li><a asp-area="" asp-controller="Backup" asp-action="Index">Backup</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Backup <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-area="" asp-controller="Backup" asp-action="Index">Search</a></li>
+                            <li><a asp-area="" asp-controller="Backup" asp-action="New">New</a></li>
+                        </ul>
+                    </li>
+                    
                     <li><a asp-area="" asp-controller="Logger" asp-action="Index">Logs</a></li>
                 </ul>
             </div>
