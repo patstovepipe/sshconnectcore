@@ -61,6 +61,13 @@ namespace SSHConnectCore
                     name: "default",
                     template: "{controller=Dashboard}/{action=Index}/{id?}");
             });
+
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Backup}/{action=New}/{id?}");
+            //});
         }
     }
 }

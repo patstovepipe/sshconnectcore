@@ -195,3 +195,7 @@ textarea {
     border-radius: 50%;
     box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 0px 12px;
 }
+
+.validation-summary-valid.alert-danger {
+    display: none;
+}

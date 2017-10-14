@@ -117,13 +117,13 @@ namespace SSHConnectCore.Controllers
 
             var fileBackupDetails = new BackupDetail();
             fileBackupDetails.BaseDirectory = "/home/patrick/";
-            fileBackupDetails.Name = "test-download.txt";
+            fileBackupDetails.SavedName = "test-download.txt";
             fileBackupDetails.ActualName = "test-download.txt";
             backupDetailsList.Add(fileBackupDetails);
 
             var directoryBackupDetails = new BackupDetail();
             directoryBackupDetails.BaseDirectory = "/home/patrick/";
-            directoryBackupDetails.Name = "test";
+            directoryBackupDetails.SavedName = "test";
             directoryBackupDetails.ActualName = "test";
             backupDetailsList.Add(directoryBackupDetails);
 
@@ -143,13 +143,13 @@ namespace SSHConnectCore.Controllers
 
             var fileBackupDetails = new BackupDetail();
             fileBackupDetails.BaseDirectory = "/home/patrick/";
-            fileBackupDetails.Name = "test-upload.txt";
+            fileBackupDetails.SavedName = "test-upload.txt";
             fileBackupDetails.ActualName = "test-upload.txt";
             backupDetailsList.Add(fileBackupDetails);
 
             var directoryBackupDetails = new BackupDetail();
             directoryBackupDetails.BaseDirectory = "/home/patrick/";
-            directoryBackupDetails.Name = "test-upload";
+            directoryBackupDetails.SavedName = "test-upload";
             directoryBackupDetails.ActualName = "test-upload";
             backupDetailsList.Add(directoryBackupDetails);
 

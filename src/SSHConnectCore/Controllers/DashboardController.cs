@@ -96,7 +96,8 @@ namespace SSHConnectCore.Controllers
 
         private List<SelectListItem> KillProcessSelectList()
         {
-            var killProcessListURL = APIURL + apiControllerName + "/KillProcessList";
+            var currentURL = CurrentURL.Length <= CurrentURL.IndexOf('/', 7) + 1 ? CurrentURL : CurrentURL.Remove(CurrentURL.IndexOf('/', 7) + 1);
+            var killProcessListURL = currentURL + apiControllerName + "/KillProcessList";
             string result = APICall(killProcessListURL);
             List<string> killProcessList = JsonConvert.DeserializeObject<List<string>>(result);
 

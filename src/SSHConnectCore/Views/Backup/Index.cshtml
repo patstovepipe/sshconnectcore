@@ -13,6 +13,8 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th></th>
+                    <th></th>
                     <th>File System Type</th>
                     <th>Backup Directory</th>
                     <th>Base Directory</th>
@@ -24,10 +26,22 @@
                 @foreach (var detail in (List<BackupDetail>)ViewBag.backupDetails)
                 {
                     <tr>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                            {
+                                <a asp-area="" asp-controller="Backup" asp-action="NewEdit" asp-route-id="@detail.SavedName"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                            {
+                                <a asp-area="" asp-controller="Backup" asp-action="Delete" asp-route-id="@detail.SavedName"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                            }
+                        </td>
                         <td>@detail.FileSystemType</td>
                         <td>@detail.BackupDirectory</td>
                         <td>@detail.BaseDirectory</td>
-                        <td>@detail.Name</td>
+                        <td>@detail.ActualName</td>
                         <td>@detail.BackedUp</td>
                     </tr>
                 }

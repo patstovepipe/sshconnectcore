@@ -6,11 +6,11 @@
 
 <div class="container-fluid">
 
-    <h1 class="page-header">@ViewBag.PageTitle</h1>
+    <h1 class="page-header">@ViewBag.PageType</h1>
 
-    <div id="messages-div">@Html.Partial("MessagesPartial")</div>
+    <form asp-controller="Backup" asp-action="NewEdit" method="post">
+        @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
 
-    <form asp-controller="Backup" asp-action="New" method="post">
         @*Type:  <input asp-for="Type" /> <br />*@
         <div class="form-group">
             <label for="FileSystemType">File System Type</label>
@@ -25,8 +25,9 @@
             <input asp-for="BaseDirectory" class="form-control"/>
         </div>
         <div class="form-group">
-            <label for="Name">Name</label>
-            <input asp-for="Name" class="form-control"/>
+            <label for="ActualName">Name</label>
+            <input asp-for="ActualName" class="form-control"/>
+            <input asp-for="SavedName" type="hidden" />
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
         <input type="button" value="Back" onclick="location.href='@Url.Action("Index", "Backup")'" class="btn btn-secondary"/>

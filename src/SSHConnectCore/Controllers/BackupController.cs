@@ -24,44 +24,165 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Index()
         {
-            var serverBackupDetails = ServerBackupDetails();
-
-            var storedBackupDetails = StoredBackupDetails();
-
-            foreach (var detail in serverBackupDetails.ToList())
-            {
-                var found = storedBackupDetails.Find(d => d.ActualName == detail.Name);
-
-                if (found != null)
-                {
-                    serverBackupDetails.Remove(detail);
-                    found.BackedUp = true;
-                    serverBackupDetails.Add(found);
-                    storedBackupDetails.Remove(found);
-                }
-            }
-
-            serverBackupDetails.AddRange(storedBackupDetails);
-
-            var backupDetails = serverBackupDetails.OrderBy(d => d.Name).ToList();
-
-            ViewBag.backupDetails = backupDetails;
+            ViewBag.backupDetails = BackupDetails();
 
             return View();
         }
 
         [HttpGet]
-        public IActionResult New()
+        public IActionResult NewEdit(string id)
         {
-            ViewBag.PageTitle = "New";
+            var backupDetail = StoredBackupDetails().Where(sbd => sbd.SavedName == id).FirstOrDefault();
+            if (backupDetail != null)
+            {
+                ViewBag.PageType = "Edit";
+                return View("NewEdit", backupDetail);
+            }
+
+            ViewBag.PageType = "New";
             return View("NewEdit");
         }
 
         [HttpPost]
-        public IActionResult New(FileBackupDetail model)
+        public IActionResult NewEdit(BackupDetail model)
         {
-            ViewBag.PageTitle = "New";
-            return View("NewEdit");
+            if (ModelState.IsValid)
+            {
+                var backupDetail = StoredBackupDetails().Where(sbd => sbd.SavedName == model.SavedName).FirstOrDefault();
+
+                List<BackupDetail> storedBackupDetails;
+
+                if (backupDetail != null)
+                {
+                    storedBackupDetails = StoredBackupDetails().Where(sbd => sbd.SavedName != model.SavedName).ToList();
+                }
+                else
+                {
+                    storedBackupDetails = StoredBackupDetails();
+                    model.SavedName = model.ActualName;
+                }
+
+                // Check if file/folder is already recorded
+                if (storedBackupDetails.Where(sbd => sbd.BaseDirectory == model.BaseDirectory 
+                    && sbd.ActualName == model.ActualName && sbd.FileSystemType == model.FileSystemType).Count() == 0)
+                {
+                    var sameNameList = storedBackupDetails.Where(sbd => sbd.ActualName == model.ActualName)
+                        .OrderBy(sbd => sbd.NameCount).ToList();
+
+                    storedBackupDetails.RemoveAll(sbd => sbd.ActualName == model.ActualName);
+                    model.BackedUp = false;
+                    sameNameList.Add(model);
+
+                    for (int i = 0; i < sameNameList.Count(); i++)
+                    {
+                        var _backupDetail = sameNameList[i];
+
+                        if (i == 0)
+                        {
+                            _backupDetail.NameCount = 1;
+                        }
+                        else
+                        {
+                            _backupDetail.NameCount = i + 1; ;
+                            _backupDetail.SavedName = _backupDetail.NameCount + "-" + _backupDetail.ActualName;
+                        }
+
+                        sameNameList[i] = _backupDetail;
+                    }
+
+                    //model.NameCount = 1;
+                    //if (sameNameList.Count() >= 1)
+                    //{
+                    //    model.NameCount = sameNameList.OrderByDescending(sn => sn.NameCount).First().NameCount + 1;
+                    //    model.SavedName = model.NameCount + "-" + model.ActualName;
+                    //}
+
+                    
+                    storedBackupDetails.AddRange(sameNameList);
+                    //storedBackupDetails.Add(model);
+                    SaveBackupDetails(storedBackupDetails);
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"This {model.FileSystemType.ToString().ToLower()} is already recorded, search for and edit the {model.FileSystemType.ToString().ToLower()}.");
+                }
+            }
+
+            return View("NewEdit", model);
+        }
+
+        //[HttpGet]
+        //public IActionResult Edit(string id)
+        //{
+        //    var backupDetail = StoredBackupDetails().Where(sbd => sbd.SavedName == id).FirstOrDefault();
+        //    ViewBag.PageType = "Edit";
+        //    return View("NewEdit", backupDetail);
+        //}
+
+        //[HttpPost]
+        //public IActionResult Edit(BackupDetail model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var storedBackupDetails = StoredBackupDetails().Where(sbd => sbd.SavedName != model.SavedName).ToList();
+        //        if (storedBackupDetails.Where(sbd => sbd.BaseDirectory == model.BaseDirectory
+        //            && sbd.ActualName == model.ActualName).Count() == 0)
+        //        {
+        //            var sameNameList = storedBackupDetails.Where(sbd => sbd.ActualName == model.ActualName)
+        //                .OrderBy(sbd => sbd.NameCount).ToList();
+
+        //            storedBackupDetails.RemoveAll(sbd => sbd.ActualName == model.ActualName);
+
+        //            for (int i = 0; i < sameNameList.Count(); i++)
+        //            {
+        //                var backupDetail = sameNameList[i];
+
+        //                if (i == 0)
+        //                {
+        //                    backupDetail.NameCount = 1;
+        //                }
+        //                else
+        //                {
+        //                    backupDetail.NameCount = i + 1; ;
+        //                    backupDetail.SavedName = backupDetail.NameCount + "-" + backupDetail.SavedName;
+        //                }
+
+        //                sameNameList[i] = backupDetail;
+        //            }
+
+        //            model.NameCount = 1;
+        //            if (sameNameList.Count() >= 1)
+        //            {
+        //                model.NameCount = sameNameList.OrderByDescending(sn => sn.NameCount).First().NameCount + 1;
+        //                model.SavedName = model.NameCount + "-" + model.SavedName;
+        //            }
+
+        //            model.BackedUp = false;
+        //            storedBackupDetails.AddRange(sameNameList);
+        //            storedBackupDetails.Add(model);
+        //            SaveBackupDetails(storedBackupDetails);
+
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "This file is already recorded, search for and edit the file.");
+        //        }
+        //        model.BackedUp = false;
+        //    }
+
+        //    return View("NewEdit", model);
+        //}
+
+        public IActionResult Delete(string id)
+        {
+            var storedBackupDetails = StoredBackupDetails().Where(sbd => sbd.SavedName != id).ToList();
+
+            SaveBackupDetails(storedBackupDetails);
+
+            return RedirectToAction("Index");
         }
 
         private string ServerDir()
@@ -74,23 +195,27 @@ namespace SSHConnectCore.Controllers
                 throw new Exception("Windows or Linux platform not found.");
         }
 
-        private List<BackupDetail> ServerBackupDetails()
+        private List<BackupDetail> ServerBackupDetails(BackupDirectory backupDirectory)
         {
-            string serverDir = ServerDir();
+            string serverDir = Path.Combine(ServerDir(), backupDirectory.ToString());
 
             List<BackupDetail> serverBackupDetails = new List<BackupDetail>();
             foreach (string file in Directory.GetFiles(serverDir))
             {
                 var fileBackupDetail = new BackupDetail();
-                fileBackupDetail.Name = Path.GetFileName(file);
+                fileBackupDetail.SavedName = Path.GetFileName(file);
+                fileBackupDetail.ActualName = fileBackupDetail.SavedName;
                 fileBackupDetail.FileSystemType = FileSystemType.File;
+                fileBackupDetail.BackupDirectory = backupDirectory;
                 serverBackupDetails.Add(fileBackupDetail);
             }
             foreach (string dir in Directory.GetDirectories(serverDir))
             {
                 var directoryBackupDetail = new BackupDetail();
-                directoryBackupDetail.Name = Path.GetFileName(dir);
+                directoryBackupDetail.SavedName = Path.GetFileName(dir);
+                directoryBackupDetail.ActualName = directoryBackupDetail.SavedName;
                 directoryBackupDetail.FileSystemType = FileSystemType.Directory;
+                directoryBackupDetail.BackupDirectory = backupDirectory;
                 serverBackupDetails.Add(directoryBackupDetail);
             }
 
@@ -101,25 +226,41 @@ namespace SSHConnectCore.Controllers
         {
             var backupDetailsFile = Path.Combine(ServerDir(), "backup_details.json");
 
-            var storedBackupDetails = JsonConvert.DeserializeObject<List<BackupDetail>>(System.IO.File.ReadAllText(backupDetailsFile));
+            var storedBackupDetails = System.IO.File.Exists(backupDetailsFile) 
+                ? JsonConvert.DeserializeObject<List<BackupDetail>>(System.IO.File.ReadAllText(backupDetailsFile)) 
+                : new List<BackupDetail>();
 
             return storedBackupDetails;
         }
 
-        private void saveToFile()
+        private List<BackupDetail> BackupDetails()
         {
-            var x = new BackupDetail();
-            x.BaseDirectory = "/home/patrick/";
-            x.BackupDirectory = BackupDirectory.Other;
-            x.Name = "test-download.txt";
-            x.ActualName = "test-download.txt";
-            x.FileSystemType = FileSystemType.File;
+            var serverBackupDetails = ServerBackupDetails(BackupDirectory.Other);
+            serverBackupDetails.AddRange(ServerBackupDetails(BackupDirectory.Roms));
 
-            var bdl = new List<BackupDetail>();
+            var storedBackupDetails = StoredBackupDetails();
 
-            bdl.Add(x);
+            foreach (var detail in serverBackupDetails.ToList())
+            {
+                var found = storedBackupDetails.Find(d => d.SavedName == detail.SavedName);
 
-            string strJson = JsonConvert.SerializeObject(bdl);
+                if (found != null)
+                {
+                    serverBackupDetails.Remove(detail);
+                    found.BackedUp = true;
+                    serverBackupDetails.Add(found);
+                    storedBackupDetails.Remove(found);
+                }
+            }
+
+            serverBackupDetails.AddRange(storedBackupDetails);
+
+            return serverBackupDetails.OrderBy(d => d.SavedName).ToList();
+        }
+
+        private void SaveBackupDetails(List<BackupDetail> backupDetailsList)
+        {
+            string strJson = JsonConvert.SerializeObject(backupDetailsList);
 
             System.IO.File.WriteAllText(Path.Combine(ServerDir(), "backup_details.json"), strJson);
         }
