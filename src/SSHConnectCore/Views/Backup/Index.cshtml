@@ -31,6 +31,15 @@
                             {
                                 <a asp-area="" asp-controller="Backup" asp-action="NewEdit" asp-route-id="@detail.SavedName"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             }
+                            else
+                            {
+                                <a asp-area="" asp-controller="Backup" asp-action="NewEdit" 
+                                    asp-route-filesystemtype="@detail.FileSystemType"
+                                    asp-route-backupdirectory="@detail.BackupDirectory"
+                                    asp-route-actualname="@detail.ActualName">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </a>
+                            }
                         </td>
                         <td>
                             @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))

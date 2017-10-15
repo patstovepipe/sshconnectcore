@@ -30,7 +30,7 @@ namespace SSHConnectCore.Controllers
         }
 
         [HttpGet]
-        public IActionResult NewEdit(string id)
+        public IActionResult NewEdit(string id, string filesystemtype, string backupdirectory, string actualname)
         {
             var backupDetail = StoredBackupDetails().Where(sbd => sbd.SavedName == id).FirstOrDefault();
             if (backupDetail != null)
@@ -38,13 +38,21 @@ namespace SSHConnectCore.Controllers
                 ViewBag.PageType = "Edit";
                 return View("NewEdit", backupDetail);
             }
+            else
+            {
+                backupDetail = new BackupDetail();
+                backupDetail.FileSystemType = Enum.TryParse(filesystemtype, out FileSystemType result) ? result : FileSystemType.File;
+                backupDetail.BackupDirectory = Enum.TryParse(backupdirectory, out BackupDirectory result2) ? result2 : BackupDirectory.Other;
+                backupDetail.ActualName = actualname;
+            }
 
             ViewBag.PageType = "New";
-            return View("NewEdit");
+            return View("NewEdit", backupDetail);
         }
 
         [HttpPost]
-        public IActionResult NewEdit(BackupDetail model)
+        [ActionName("NewEdit")]
+        public IActionResult NewEditPost(BackupDetail model)
         {
             if (ModelState.IsValid)
             {
@@ -89,17 +97,8 @@ namespace SSHConnectCore.Controllers
 
                         sameNameList[i] = _backupDetail;
                     }
-
-                    //model.NameCount = 1;
-                    //if (sameNameList.Count() >= 1)
-                    //{
-                    //    model.NameCount = sameNameList.OrderByDescending(sn => sn.NameCount).First().NameCount + 1;
-                    //    model.SavedName = model.NameCount + "-" + model.ActualName;
-                    //}
-
                     
                     storedBackupDetails.AddRange(sameNameList);
-                    //storedBackupDetails.Add(model);
                     SaveBackupDetails(storedBackupDetails);
 
                     return RedirectToAction("Index");
@@ -112,69 +111,6 @@ namespace SSHConnectCore.Controllers
 
             return View("NewEdit", model);
         }
-
-        //[HttpGet]
-        //public IActionResult Edit(string id)
-        //{
-        //    var backupDetail = StoredBackupDetails().Where(sbd => sbd.SavedName == id).FirstOrDefault();
-        //    ViewBag.PageType = "Edit";
-        //    return View("NewEdit", backupDetail);
-        //}
-
-        //[HttpPost]
-        //public IActionResult Edit(BackupDetail model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var storedBackupDetails = StoredBackupDetails().Where(sbd => sbd.SavedName != model.SavedName).ToList();
-        //        if (storedBackupDetails.Where(sbd => sbd.BaseDirectory == model.BaseDirectory
-        //            && sbd.ActualName == model.ActualName).Count() == 0)
-        //        {
-        //            var sameNameList = storedBackupDetails.Where(sbd => sbd.ActualName == model.ActualName)
-        //                .OrderBy(sbd => sbd.NameCount).ToList();
-
-        //            storedBackupDetails.RemoveAll(sbd => sbd.ActualName == model.ActualName);
-
-        //            for (int i = 0; i < sameNameList.Count(); i++)
-        //            {
-        //                var backupDetail = sameNameList[i];
-
-        //                if (i == 0)
-        //                {
-        //                    backupDetail.NameCount = 1;
-        //                }
-        //                else
-        //                {
-        //                    backupDetail.NameCount = i + 1; ;
-        //                    backupDetail.SavedName = backupDetail.NameCount + "-" + backupDetail.SavedName;
-        //                }
-
-        //                sameNameList[i] = backupDetail;
-        //            }
-
-        //            model.NameCount = 1;
-        //            if (sameNameList.Count() >= 1)
-        //            {
-        //                model.NameCount = sameNameList.OrderByDescending(sn => sn.NameCount).First().NameCount + 1;
-        //                model.SavedName = model.NameCount + "-" + model.SavedName;
-        //            }
-
-        //            model.BackedUp = false;
-        //            storedBackupDetails.AddRange(sameNameList);
-        //            storedBackupDetails.Add(model);
-        //            SaveBackupDetails(storedBackupDetails);
-
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError("", "This file is already recorded, search for and edit the file.");
-        //        }
-        //        model.BackedUp = false;
-        //    }
-
-        //    return View("NewEdit", model);
-        //}
 
         public IActionResult Delete(string id)
         {
