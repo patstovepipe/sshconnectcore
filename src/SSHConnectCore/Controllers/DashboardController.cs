@@ -35,23 +35,20 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Shutdown()
         {
-            string result = APICall();
-            result = JsonConvert.DeserializeObject(result).ToString();
-            var vm = SetMessage(result);
-
-            return PartialView("MessagesPartial", vm);
+            return DoAction();
         }
 
         public IActionResult Restart()
         {
-            string result = APICall();
-            result = JsonConvert.DeserializeObject(result).ToString();
-            var vm = SetMessage(result);
-
-            return PartialView("MessagesPartial", vm);
+            return DoAction();
         }
 
         public IActionResult KillProcess(string id)
+        {
+            return DoAction();
+        }
+
+        public IActionResult DoAction()
         {
             string result = APICall();
             result = JsonConvert.DeserializeObject(result).ToString();
