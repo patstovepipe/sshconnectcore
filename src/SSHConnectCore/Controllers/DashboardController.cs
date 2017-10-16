@@ -9,21 +9,10 @@ using SSHConnectCore.Models.Dashboard;
 
 namespace SSHConnectCore.Controllers
 {
-    public class DashboardController : Controller
+    public class DashboardController : WebController
     {
-        private readonly AppSettings appSettings;
-
-        private readonly HttpClient client = new HttpClient();
-
-        private static string apiControllerName = "SSHConnect";
-
-        private string CurrentURL => Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
-
-        private string APIURL => CurrentURL.Replace(ControllerContext.RouteData.Values["controller"].ToString(), apiControllerName);
-
-        public DashboardController(IOptions<AppSettings> settings)
+        public DashboardController(IOptions<AppSettings> settings) : base(settings)
         {
-            this.appSettings = settings.Value;
         }
 
         public IActionResult Index()

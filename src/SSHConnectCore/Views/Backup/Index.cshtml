@@ -29,14 +29,18 @@
                         <td>
                             @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
                             {
-                                <a asp-area="" asp-controller="Backup" asp-action="NewEdit" asp-route-id="@detail.SavedName"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                <a asp-area="" asp-controller="Backup" asp-action="NewEdit"
+                                   asp-route-savedname="@detail.SavedName"
+                                   asp-route-filesystemtype="@detail.FileSystemType">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </a>
                             }
                             else
                             {
-                                <a asp-area="" asp-controller="Backup" asp-action="NewEdit" 
-                                    asp-route-filesystemtype="@detail.FileSystemType"
-                                    asp-route-backupdirectory="@detail.BackupDirectory"
-                                    asp-route-actualname="@detail.ActualName">
+                                <a asp-area="" asp-controller="Backup" asp-action="NewEdit"
+                                   asp-route-filesystemtype="@detail.FileSystemType"
+                                   asp-route-backupdirectory="@detail.BackupDirectory"
+                                   asp-route-actualname="@detail.ActualName">
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                 </a>
                             }
@@ -44,7 +48,11 @@
                         <td>
                             @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
                             {
-                                <a asp-area="" asp-controller="Backup" asp-action="Delete" asp-route-id="@detail.SavedName"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                <a asp-area="" asp-controller="Backup" asp-action="Delete"
+                                   asp-route-savedname="@detail.SavedName"
+                                   asp-route-filesystemtype="@detail.FileSystemType">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                </a>
                             }
                         </td>
                         <td>@detail.FileSystemType</td>

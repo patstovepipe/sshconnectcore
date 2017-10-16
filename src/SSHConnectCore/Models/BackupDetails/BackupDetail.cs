@@ -21,6 +21,5 @@ namespace SSHConnectCore.Models.BackupDetails
         [JsonConverter(typeof(StringEnumConverter))]
         public FileSystemType FileSystemType { get; set; }
         public bool? BackedUp { get; set; }
-        public int NameCount { get; set; }
     }
 }

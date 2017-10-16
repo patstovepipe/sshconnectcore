@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace SSHConnectCore.Controllers
 {
-    public class BackupController : Controller
+    public class BackupController : WebController
     {
-        private readonly AppSettings appSettings;
+        private string backupDetailsFileName = "backup_details.json";
+        private string backupDetailsFullFileName => Path.Combine(ServerDir(), backupDetailsFileName);
 
-        public BackupController(IOptions<AppSettings> settings)
+        public BackupController(IOptions<AppSettings> settings) : base(settings)
         {
-            this.appSettings = settings.Value;
         }
 
         public IActionResult Index()
@@ -30,9 +30,10 @@ namespace SSHConnectCore.Controllers
         }
 
         [HttpGet]
-        public IActionResult NewEdit(string id, string filesystemtype, string backupdirectory, string actualname)
+        public IActionResult NewEdit(string savedName, string fileSystemType, string backupDirectory, string actualName)
         {
-            var backupDetail = StoredBackupDetails().Where(sbd => sbd.SavedName == id).FirstOrDefault();
+            var backupDetail = BackupDetailFirstOrDefault(savedName, fileSystemType);
+
             if (backupDetail != null)
             {
                 ViewBag.PageType = "Edit";
@@ -41,9 +42,9 @@ namespace SSHConnectCore.Controllers
             else
             {
                 backupDetail = new BackupDetail();
-                backupDetail.FileSystemType = Enum.TryParse(filesystemtype, out FileSystemType result) ? result : FileSystemType.File;
-                backupDetail.BackupDirectory = Enum.TryParse(backupdirectory, out BackupDirectory result2) ? result2 : BackupDirectory.Other;
-                backupDetail.ActualName = actualname;
+                backupDetail.FileSystemType = Enum.TryParse(fileSystemType, out FileSystemType result) ? result : FileSystemType.File;
+                backupDetail.BackupDirectory = Enum.TryParse(backupDirectory, out BackupDirectory result2) ? result2 : BackupDirectory.Other;
+                backupDetail.ActualName = actualName;
             }
 
             ViewBag.PageType = "New";
@@ -56,49 +57,63 @@ namespace SSHConnectCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var backupDetail = StoredBackupDetails().Where(sbd => sbd.SavedName == model.SavedName).FirstOrDefault();
+                var backupDetail = BackupDetailFirstOrDefault(model.SavedName, null, model.FileSystemType);
 
                 List<BackupDetail> storedBackupDetails;
 
+                var newBackupDetail = false;
                 if (backupDetail != null)
-                {
-                    storedBackupDetails = StoredBackupDetails().Where(sbd => sbd.SavedName != model.SavedName).ToList();
-                }
+                    storedBackupDetails = BackupDetailListRemove(model.SavedName, null, model.FileSystemType);
                 else
                 {
+                    newBackupDetail = true;
                     storedBackupDetails = StoredBackupDetails();
-                    model.SavedName = model.ActualName;
                 }
 
                 // Check if file/folder is already recorded
-                if (storedBackupDetails.Where(sbd => sbd.BaseDirectory == model.BaseDirectory 
+                if (storedBackupDetails.Where(sbd => sbd.BaseDirectory == model.BaseDirectory
                     && sbd.ActualName == model.ActualName && sbd.FileSystemType == model.FileSystemType).Count() == 0)
                 {
-                    var sameNameList = storedBackupDetails.Where(sbd => sbd.ActualName == model.ActualName)
-                        .OrderBy(sbd => sbd.NameCount).ToList();
-
-                    storedBackupDetails.RemoveAll(sbd => sbd.ActualName == model.ActualName);
                     model.BackedUp = false;
-                    sameNameList.Add(model);
 
-                    for (int i = 0; i < sameNameList.Count(); i++)
+                    if (newBackupDetail)
                     {
-                        var _backupDetail = sameNameList[i];
-
-                        if (i == 0)
+                        if (model.FileSystemType == FileSystemType.File && !storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
                         {
-                            _backupDetail.NameCount = 1;
+                            model.SavedName = model.ActualName;
+                        }
+                        else if (model.FileSystemType == FileSystemType.Directory && !storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
+                        {
+                            model.SavedName = model.ActualName;
                         }
                         else
                         {
-                            _backupDetail.NameCount = i + 1; ;
-                            _backupDetail.SavedName = _backupDetail.NameCount + "-" + _backupDetail.ActualName;
-                        }
+                            var counter = 2;
+                            var name = counter + "-" + model.ActualName;
+                            
+                            while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
+                                    || storedBackupDetails.Exists(snl => snl.SavedName == name && snl.FileSystemType == model.FileSystemType)))
+                            {
+                                counter++;
+                                name = counter + "-" + model.ActualName;
+                            }
 
-                        sameNameList[i] = _backupDetail;
+                            while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
+                                    || storedBackupDetails.Exists(snl => snl.SavedName == name && snl.FileSystemType == model.FileSystemType)))
+                            {
+                                counter++;
+                                name = counter + "-" + model.ActualName;
+                            }
+
+                            model.SavedName = name;
+                        }
+                        storedBackupDetails.Add(model);
                     }
-                    
-                    storedBackupDetails.AddRange(sameNameList);
+                    else
+                    {
+                        storedBackupDetails.Add(model);
+                    }
+
                     SaveBackupDetails(storedBackupDetails);
 
                     return RedirectToAction("Index");
@@ -112,9 +127,9 @@ namespace SSHConnectCore.Controllers
             return View("NewEdit", model);
         }
 
-        public IActionResult Delete(string id)
+        public IActionResult Delete(string savedName, string fileSystemType)
         {
-            var storedBackupDetails = StoredBackupDetails().Where(sbd => sbd.SavedName != id).ToList();
+            var storedBackupDetails = BackupDetailListRemove(savedName, fileSystemType);
 
             SaveBackupDetails(storedBackupDetails);
 
@@ -160,10 +175,8 @@ namespace SSHConnectCore.Controllers
 
         private List<BackupDetail> StoredBackupDetails()
         {
-            var backupDetailsFile = Path.Combine(ServerDir(), "backup_details.json");
-
-            var storedBackupDetails = System.IO.File.Exists(backupDetailsFile) 
-                ? JsonConvert.DeserializeObject<List<BackupDetail>>(System.IO.File.ReadAllText(backupDetailsFile)) 
+            var storedBackupDetails = System.IO.File.Exists(backupDetailsFullFileName)
+                ? JsonConvert.DeserializeObject<List<BackupDetail>>(System.IO.File.ReadAllText(backupDetailsFullFileName))
                 : new List<BackupDetail>();
 
             return storedBackupDetails;
@@ -178,7 +191,7 @@ namespace SSHConnectCore.Controllers
 
             foreach (var detail in serverBackupDetails.ToList())
             {
-                var found = storedBackupDetails.Find(d => d.SavedName == detail.SavedName);
+                var found = storedBackupDetails.Find(d => d.SavedName == detail.SavedName && d.FileSystemType == detail.FileSystemType);
 
                 if (found != null)
                 {
@@ -198,7 +211,21 @@ namespace SSHConnectCore.Controllers
         {
             string strJson = JsonConvert.SerializeObject(backupDetailsList);
 
-            System.IO.File.WriteAllText(Path.Combine(ServerDir(), "backup_details.json"), strJson);
+            System.IO.File.WriteAllText(backupDetailsFullFileName, strJson);
+        }
+
+        private BackupDetail BackupDetailFirstOrDefault(string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
+        {
+            var fst = fileSystemTypeString == null ? fileSystemType : Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File;
+
+            return StoredBackupDetails().Where(sbd => sbd.SavedName == savedName && sbd.FileSystemType == fst).FirstOrDefault();
+        }
+
+        private List<BackupDetail> BackupDetailListRemove(string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
+        {
+            var fst = fileSystemTypeString == null ? fileSystemType : Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File;
+
+            return StoredBackupDetails().Where(sbd => !(sbd.SavedName == savedName && sbd.FileSystemType == fst)).ToList();
         }
     }
 }
