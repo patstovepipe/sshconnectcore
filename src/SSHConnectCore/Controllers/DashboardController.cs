@@ -24,60 +24,17 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Shutdown()
         {
-            return DoAction();
+            return DoAPIAction();
         }
 
         public IActionResult Restart()
         {
-            return DoAction();
+            return DoAPIAction();
         }
 
         public IActionResult KillProcess(string id)
         {
-            return DoAction();
-        }
-
-        public IActionResult DoAction()
-        {
-            string result = APICall();
-            result = JsonConvert.DeserializeObject(result).ToString();
-            var vm = SetMessage(result);
-
-            return PartialView("MessagesPartial", vm);
-        }
-
-        private string APICall(string url = null)
-        {
-            using (var client = new HttpClient())
-            {
-                return client
-                    .GetAsync(url ?? APIURL)
-                    .Result
-                    .Content.ReadAsStringAsync().Result;
-            }
-        }
-
-        private MessageViewModel SetMessage(string result, string successMessage = "", string errorMessage = "")
-        {
-            var vm = new MessageViewModel();
-
-            switch (result)
-            {
-                case "Success":
-                    vm.Status = result;
-                    vm.Details = successMessage;
-                    break;
-                case "Error":
-                    vm.Status = result;
-                    TempData["MessageDetails"] = errorMessage;
-                    break;
-                default:
-                    vm.Status = "Error";
-                    vm.Details = "An error ocurred.";
-                    break;
-            }
-
-            return vm;
+            return DoAPIAction();
         }
 
         private List<SelectListItem> KillProcessSelectList()

@@ -111,21 +111,23 @@ namespace SSHConnectCore.Controllers
             return Json(sshConnection.killProcessList);
         }
 
-        public IActionResult Download()
+        public IActionResult Download(BackupDetail detail)
         {
             var backupDetailsList = new List<BackupDetail>();
 
-            var fileBackupDetails = new BackupDetail();
-            fileBackupDetails.BaseDirectory = "/home/patrick/";
-            fileBackupDetails.SavedName = "test-download.txt";
-            fileBackupDetails.ActualName = "test-download.txt";
-            backupDetailsList.Add(fileBackupDetails);
+            backupDetailsList.Add(detail);
 
-            var directoryBackupDetails = new BackupDetail();
-            directoryBackupDetails.BaseDirectory = "/home/patrick/";
-            directoryBackupDetails.SavedName = "test";
-            directoryBackupDetails.ActualName = "test";
-            backupDetailsList.Add(directoryBackupDetails);
+            //var fileBackupDetails = new BackupDetail();
+            //fileBackupDetails.BaseDirectory = "/home/patrick/";
+            //fileBackupDetails.SavedName = "test-download.txt";
+            //fileBackupDetails.ActualName = "test-download.txt";
+            //backupDetailsList.Add(fileBackupDetails);
+
+            //var directoryBackupDetails = new BackupDetail();
+            //directoryBackupDetails.BaseDirectory = "/home/patrick/";
+            //directoryBackupDetails.SavedName = "test";
+            //directoryBackupDetails.ActualName = "test";
+            //backupDetailsList.Add(directoryBackupDetails);
 
             var args = new object[] { backupDetailsList };
 

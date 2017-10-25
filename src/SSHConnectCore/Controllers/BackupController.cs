@@ -78,36 +78,50 @@ namespace SSHConnectCore.Controllers
 
                     if (newBackupDetail)
                     {
-                        if (model.FileSystemType == FileSystemType.File && !storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
+                        string name = "";
+
+                        if (model.FileSystemType == FileSystemType.File)
                         {
-                            model.SavedName = model.ActualName;
-                        }
-                        else if (model.FileSystemType == FileSystemType.Directory && !storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
-                        {
-                            model.SavedName = model.ActualName;
+                            if (!storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
+                                name = model.ActualName;
+                            else
+                            {
+                                var counter = 2;
+                                name = counter + "-" + model.ActualName;
+
+                                while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
+                                        || storedBackupDetails.Exists(snl => snl.SavedName == name && snl.FileSystemType == model.FileSystemType)))
+                                {
+                                    counter++;
+                                    name = counter + "-" + model.ActualName;
+                                }
+                            }
                         }
                         else
                         {
-                            var counter = 2;
-                            var name = counter + "-" + model.ActualName;
-                            
-                            while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
-                                    || storedBackupDetails.Exists(snl => snl.SavedName == name && snl.FileSystemType == model.FileSystemType)))
+                            if (!storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
+                                name = model.ActualName;
+                            else
                             {
-                                counter++;
+                                var counter = 2;
                                 name = counter + "-" + model.ActualName;
-                            }
 
-                            while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
+                                while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
                                     || storedBackupDetails.Exists(snl => snl.SavedName == name && snl.FileSystemType == model.FileSystemType)))
-                            {
-                                counter++;
-                                name = counter + "-" + model.ActualName;
+                                {
+                                    counter++;
+                                    name = counter + "-" + model.ActualName;
+                                }
                             }
-
-                            model.SavedName = name;
                         }
-                        storedBackupDetails.Add(model);
+
+                        if (string.IsNullOrEmpty(name))
+                            throw new Exception("Saved name is empty or null.");
+                        else
+                        {
+                            model.SavedName = name;
+                            storedBackupDetails.Add(model);
+                        }
                     }
                     else
                     {
@@ -125,6 +139,23 @@ namespace SSHConnectCore.Controllers
             }
 
             return View("NewEdit", model);
+        }
+
+        public IActionResult Download(string savedName, string fileSystemType)
+        {
+
+            return DoAPIAction();
+        }
+
+        protected override IActionResult DoAPIAction()
+        {
+            string url = APIURL;
+
+            string result = APICall();
+            result = JsonConvert.DeserializeObject(result).ToString();
+            var vm = SetMessage(result);
+
+            return PartialView("MessagesPartial", vm);
         }
 
         public IActionResult Delete(string savedName, string fileSystemType)
@@ -216,14 +247,14 @@ namespace SSHConnectCore.Controllers
 
         private BackupDetail BackupDetailFirstOrDefault(string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
         {
-            var fst = fileSystemTypeString == null ? fileSystemType : Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File;
+            var fst = fileSystemTypeString == null ? fileSystemType : (Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File);
 
             return StoredBackupDetails().Where(sbd => sbd.SavedName == savedName && sbd.FileSystemType == fst).FirstOrDefault();
         }
 
         private List<BackupDetail> BackupDetailListRemove(string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
         {
-            var fst = fileSystemTypeString == null ? fileSystemType : Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File;
+            var fst = fileSystemTypeString == null ? fileSystemType : (Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File);
 
             return StoredBackupDetails().Where(sbd => !(sbd.SavedName == savedName && sbd.FileSystemType == fst)).ToList();
         }

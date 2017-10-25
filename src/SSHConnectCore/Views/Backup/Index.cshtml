@@ -15,6 +15,7 @@
                 <tr>
                     <th></th>
                     <th></th>
+                    <th></th>
                     <th>File System Type</th>
                     <th>Backup Directory</th>
                     <th>Base Directory</th>
@@ -52,6 +53,16 @@
                                    asp-route-savedname="@detail.SavedName"
                                    asp-route-filesystemtype="@detail.FileSystemType">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                </a>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                            {
+                                <a asp-area="" asp-controller="Backup" asp-action="Dowload"
+                                   asp-route-savedname="@detail.SavedName"
+                                   asp-route-filesystemtype="@detail.FileSystemType">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
                                 </a>
                             }
                         </td>
