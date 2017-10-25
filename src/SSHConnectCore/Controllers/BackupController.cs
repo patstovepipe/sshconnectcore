@@ -82,7 +82,7 @@ namespace SSHConnectCore.Controllers
 
                         if (model.FileSystemType == FileSystemType.File)
                         {
-                            if (!storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
+                            if (!storedBackupDetails.Exists(sbd => sbd.SavedName == model.ActualName && sbd.FileSystemType == model.FileSystemType))
                                 name = model.ActualName;
                             else
                             {
@@ -90,7 +90,7 @@ namespace SSHConnectCore.Controllers
                                 name = counter + "-" + model.ActualName;
 
                                 while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
-                                        || storedBackupDetails.Exists(snl => snl.SavedName == name && snl.FileSystemType == model.FileSystemType)))
+                                        || storedBackupDetails.Exists(sbd => sbd.SavedName == name && sbd.FileSystemType == model.FileSystemType)))
                                 {
                                     counter++;
                                     name = counter + "-" + model.ActualName;
@@ -99,7 +99,7 @@ namespace SSHConnectCore.Controllers
                         }
                         else
                         {
-                            if (!storedBackupDetails.Exists(snl => snl.SavedName == model.ActualName && snl.FileSystemType == model.FileSystemType))
+                            if (!storedBackupDetails.Exists(sbd => sbd.SavedName == model.ActualName && sbd.FileSystemType == model.FileSystemType))
                                 name = model.ActualName;
                             else
                             {
@@ -107,7 +107,7 @@ namespace SSHConnectCore.Controllers
                                 name = counter + "-" + model.ActualName;
 
                                 while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
-                                    || storedBackupDetails.Exists(snl => snl.SavedName == name && snl.FileSystemType == model.FileSystemType)))
+                                    || storedBackupDetails.Exists(sbd => sbd.SavedName == name && sbd.FileSystemType == model.FileSystemType)))
                                 {
                                     counter++;
                                     name = counter + "-" + model.ActualName;
