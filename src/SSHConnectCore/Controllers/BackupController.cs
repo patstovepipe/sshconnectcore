@@ -15,16 +15,14 @@ namespace SSHConnectCore.Controllers
 {
     public class BackupController : WebController
     {
-        private string backupDetailsFileName = "backup_details.json";
-        private string backupDetailsFullFileName => Path.Combine(ServerDir(), backupDetailsFileName);
-
         public BackupController(IOptions<AppSettings> settings) : base(settings)
         {
+            BackupDetails.SetAppSettings(settings.Value);
         }
 
         public IActionResult Index()
         {
-            ViewBag.backupDetails = BackupDetails();
+            ViewBag.backupDetails = BackupDetails.List();
 
             return View();
         }
@@ -32,7 +30,7 @@ namespace SSHConnectCore.Controllers
         [HttpGet]
         public IActionResult NewEdit(string savedName, string fileSystemType, string backupDirectory, string actualName)
         {
-            var backupDetail = BackupDetailFirstOrDefault(savedName, fileSystemType);
+            var backupDetail = BackupDetails.StoredBackupDetails().Get(savedName, fileSystemType);
 
             if (backupDetail != null)
             {
@@ -57,17 +55,17 @@ namespace SSHConnectCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var backupDetail = BackupDetailFirstOrDefault(model.SavedName, null, model.FileSystemType);
+                var backupDetail = BackupDetails.StoredBackupDetails().Get(model.SavedName, null, model.FileSystemType);
 
                 List<BackupDetail> storedBackupDetails;
 
                 var newBackupDetail = false;
                 if (backupDetail != null)
-                    storedBackupDetails = BackupDetailListRemove(model.SavedName, null, model.FileSystemType);
+                    storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(model.SavedName, null, model.FileSystemType);
                 else
                 {
                     newBackupDetail = true;
-                    storedBackupDetails = StoredBackupDetails();
+                    storedBackupDetails = BackupDetails.StoredBackupDetails();
                 }
 
                 // Check if file/folder is already recorded
@@ -128,7 +126,7 @@ namespace SSHConnectCore.Controllers
                         storedBackupDetails.Add(model);
                     }
 
-                    SaveBackupDetails(storedBackupDetails);
+                    storedBackupDetails.Save();
 
                     return RedirectToAction("Index");
                 }
@@ -143,7 +141,7 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Download(string savedName, string fileSystemType)
         {
-
+            var detail = BackupDetails.StoredBackupDetails().Get(savedName, fileSystemType);
             return DoAPIAction();
         }
 
@@ -160,9 +158,9 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Delete(string savedName, string fileSystemType)
         {
-            var storedBackupDetails = BackupDetailListRemove(savedName, fileSystemType);
+            var storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(savedName, fileSystemType);
 
-            SaveBackupDetails(storedBackupDetails);
+            storedBackupDetails.Save();
 
             return RedirectToAction("Index");
         }
@@ -175,88 +173,6 @@ namespace SSHConnectCore.Controllers
                 return this.appSettings.linuxServerDirectory;
             else
                 throw new Exception("Windows or Linux platform not found.");
-        }
-
-        private List<BackupDetail> ServerBackupDetails(BackupDirectory backupDirectory)
-        {
-            string serverDir = Path.Combine(ServerDir(), backupDirectory.ToString());
-
-            List<BackupDetail> serverBackupDetails = new List<BackupDetail>();
-            foreach (string file in Directory.GetFiles(serverDir))
-            {
-                var fileBackupDetail = new BackupDetail();
-                fileBackupDetail.SavedName = Path.GetFileName(file);
-                fileBackupDetail.ActualName = fileBackupDetail.SavedName;
-                fileBackupDetail.FileSystemType = FileSystemType.File;
-                fileBackupDetail.BackupDirectory = backupDirectory;
-                serverBackupDetails.Add(fileBackupDetail);
-            }
-            foreach (string dir in Directory.GetDirectories(serverDir))
-            {
-                var directoryBackupDetail = new BackupDetail();
-                directoryBackupDetail.SavedName = Path.GetFileName(dir);
-                directoryBackupDetail.ActualName = directoryBackupDetail.SavedName;
-                directoryBackupDetail.FileSystemType = FileSystemType.Directory;
-                directoryBackupDetail.BackupDirectory = backupDirectory;
-                serverBackupDetails.Add(directoryBackupDetail);
-            }
-
-            return serverBackupDetails;
-        }
-
-        private List<BackupDetail> StoredBackupDetails()
-        {
-            var storedBackupDetails = System.IO.File.Exists(backupDetailsFullFileName)
-                ? JsonConvert.DeserializeObject<List<BackupDetail>>(System.IO.File.ReadAllText(backupDetailsFullFileName))
-                : new List<BackupDetail>();
-
-            return storedBackupDetails;
-        }
-
-        private List<BackupDetail> BackupDetails()
-        {
-            var serverBackupDetails = ServerBackupDetails(BackupDirectory.Other);
-            serverBackupDetails.AddRange(ServerBackupDetails(BackupDirectory.Roms));
-
-            var storedBackupDetails = StoredBackupDetails();
-
-            foreach (var detail in serverBackupDetails.ToList())
-            {
-                var found = storedBackupDetails.Find(d => d.SavedName == detail.SavedName && d.FileSystemType == detail.FileSystemType);
-
-                if (found != null)
-                {
-                    serverBackupDetails.Remove(detail);
-                    found.BackedUp = true;
-                    serverBackupDetails.Add(found);
-                    storedBackupDetails.Remove(found);
-                }
-            }
-
-            serverBackupDetails.AddRange(storedBackupDetails);
-
-            return serverBackupDetails.OrderBy(d => d.SavedName).ToList();
-        }
-
-        private void SaveBackupDetails(List<BackupDetail> backupDetailsList)
-        {
-            string strJson = JsonConvert.SerializeObject(backupDetailsList);
-
-            System.IO.File.WriteAllText(backupDetailsFullFileName, strJson);
-        }
-
-        private BackupDetail BackupDetailFirstOrDefault(string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
-        {
-            var fst = fileSystemTypeString == null ? fileSystemType : (Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File);
-
-            return StoredBackupDetails().Where(sbd => sbd.SavedName == savedName && sbd.FileSystemType == fst).FirstOrDefault();
-        }
-
-        private List<BackupDetail> BackupDetailListRemove(string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
-        {
-            var fst = fileSystemTypeString == null ? fileSystemType : (Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File);
-
-            return StoredBackupDetails().Where(sbd => !(sbd.SavedName == savedName && sbd.FileSystemType == fst)).ToList();
         }
     }
 }
