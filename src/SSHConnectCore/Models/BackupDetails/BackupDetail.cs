@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SSHConnectCore.Models.BackupDetails
@@ -9,6 +10,7 @@ namespace SSHConnectCore.Models.BackupDetails
 
     public class BackupDetail
     {
+        public Guid ID { get; set; }
         [Required]
         [Display(Name = "Base Directory")]
         public string BaseDirectory { get; set; }

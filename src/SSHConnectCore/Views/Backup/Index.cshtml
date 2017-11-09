@@ -31,8 +31,7 @@
                             @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
                             {
                                 <a asp-area="" asp-controller="Backup" asp-action="NewEdit"
-                                   asp-route-savedname="@detail.SavedName"
-                                   asp-route-filesystemtype="@detail.FileSystemType">
+                                   asp-route-id="@detail.ID">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 </a>
                             }
@@ -50,8 +49,7 @@
                             @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
                             {
                                 <a asp-area="" asp-controller="Backup" asp-action="Delete"
-                                   asp-route-savedname="@detail.SavedName"
-                                   asp-route-filesystemtype="@detail.FileSystemType">
+                                   asp-route-id="@detail.ID">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </a>
                             }
@@ -59,9 +57,8 @@
                         <td>
                             @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
                             {
-                                <a asp-area="" asp-controller="Backup" asp-action="Dowload"
-                                   asp-route-savedname="@detail.SavedName"
-                                   asp-route-filesystemtype="@detail.FileSystemType">
+                                <a class="download-a" asp-controller="Backup" asp-action="Download"
+                                   asp-route-id="@detail.ID">
                                     <i class="fa fa-download" aria-hidden="true"></i>
                                 </a>
                             }
@@ -77,3 +74,18 @@
         </table>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('.download-a').click(function (e) {
+            e.preventDefault(); 
+
+            $.ajax({
+                url: $(this).attr('href'),
+                success: function (data) {
+                    $('#messages-div').html(data);
+                }
+            });
+        });
+    });
+</script>

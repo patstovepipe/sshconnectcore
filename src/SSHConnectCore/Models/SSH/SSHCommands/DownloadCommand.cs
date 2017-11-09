@@ -22,7 +22,7 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
                     var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
                     results.Add(result.ExitStatus == 0);
                 }
-                else if (backupDetails.FileSystemType == FileSystemType.File)
+                else if (backupDetails.FileSystemType == FileSystemType.Directory)
                 {
                     var source = backupDetails.BaseDirectory + backupDetails.ActualName;
                     var target = this.downloadDirectory;

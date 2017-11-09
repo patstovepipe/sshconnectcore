@@ -111,11 +111,11 @@ namespace SSHConnectCore.Controllers
             return Json(sshConnection.killProcessList);
         }
 
-        public IActionResult Download(BackupDetail detail)
+        public IActionResult Download(string id)
         {
             var backupDetailsList = new List<BackupDetail>();
 
-            backupDetailsList.Add(detail);
+            backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
 
             //var fileBackupDetails = new BackupDetail();
             //fileBackupDetails.BaseDirectory = "/home/patrick/";

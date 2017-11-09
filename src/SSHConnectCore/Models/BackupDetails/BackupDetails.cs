@@ -12,18 +12,30 @@ namespace SSHConnectCore.Models.BackupDetails
 {
     public static class Extensions
     {
-        public static BackupDetail Get(this List<BackupDetail> list, string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
+        public static BackupDetail Get(this List<BackupDetail> list, string id)
         {
-            var fst = fileSystemTypeString == null ? fileSystemType : (Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File);
+            if (Guid.TryParse(id, out Guid result))
+                return list.Get(result);
 
-            return list.Where(sbd => sbd.SavedName == savedName && sbd.FileSystemType == fst).FirstOrDefault();
+            return null;
         }
 
-        public static List<BackupDetail> Exclude(this List<BackupDetail> list, string savedName, string fileSystemTypeString = null, FileSystemType fileSystemType = FileSystemType.File)
+        public static BackupDetail Get(this List<BackupDetail> list, Guid id)
         {
-            var fst = fileSystemTypeString == null ? fileSystemType : (Enum.TryParse(fileSystemTypeString, out FileSystemType result) ? result : FileSystemType.File);
+            return list.Where(sbd => sbd.ID == id).FirstOrDefault();
+        }
 
-            return list.Where(sbd => !(sbd.SavedName == savedName && sbd.FileSystemType == fst)).ToList();
+        public static List<BackupDetail> Exclude(this List<BackupDetail> list, string id)
+        {
+            if (Guid.TryParse(id, out Guid result))
+                return list.Exclude(result);
+
+            return null;
+        }
+
+        public static List<BackupDetail> Exclude(this List<BackupDetail> list, Guid id)
+        {
+            return list.Where(sbd => !(sbd.ID == id)).ToList();
         }
 
         public static void Save(this List<BackupDetail> list)

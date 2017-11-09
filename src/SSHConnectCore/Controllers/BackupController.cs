@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.BackupDetails;
+using SSHConnectCore.Models.Dashboard;
 using SSHConnectCore.Utilities;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,9 @@ namespace SSHConnectCore.Controllers
         }
 
         [HttpGet]
-        public IActionResult NewEdit(string savedName, string fileSystemType, string backupDirectory, string actualName)
+        public IActionResult NewEdit(string id, string fileSystemType, string backupDirectory, string actualName)
         {
-            var backupDetail = BackupDetails.StoredBackupDetails().Get(savedName, fileSystemType);
+            var backupDetail = BackupDetails.StoredBackupDetails().Get(id);
 
             if (backupDetail != null)
             {
@@ -55,13 +56,13 @@ namespace SSHConnectCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var backupDetail = BackupDetails.StoredBackupDetails().Get(model.SavedName, null, model.FileSystemType);
+                var backupDetail = BackupDetails.StoredBackupDetails().Get(model.ID);
 
                 List<BackupDetail> storedBackupDetails;
 
                 var newBackupDetail = false;
                 if (backupDetail != null)
-                    storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(model.SavedName, null, model.FileSystemType);
+                    storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(model.ID);
                 else
                 {
                     newBackupDetail = true;
@@ -118,6 +119,7 @@ namespace SSHConnectCore.Controllers
                         else
                         {
                             model.SavedName = name;
+                            model.ID = Guid.NewGuid();
                             storedBackupDetails.Add(model);
                         }
                     }
@@ -139,26 +141,15 @@ namespace SSHConnectCore.Controllers
             return View("NewEdit", model);
         }
 
-        public IActionResult Download(string savedName, string fileSystemType)
+        public IActionResult Download(string id)
         {
-            var detail = BackupDetails.StoredBackupDetails().Get(savedName, fileSystemType);
+            var detail = BackupDetails.StoredBackupDetails().Get(id);
             return DoAPIAction();
         }
 
-        protected override IActionResult DoAPIAction()
+        public IActionResult Delete(string id)
         {
-            string url = APIURL;
-
-            string result = APICall();
-            result = JsonConvert.DeserializeObject(result).ToString();
-            var vm = SetMessage(result);
-
-            return PartialView("MessagesPartial", vm);
-        }
-
-        public IActionResult Delete(string savedName, string fileSystemType)
-        {
-            var storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(savedName, fileSystemType);
+            var storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(id);
 
             storedBackupDetails.Save();
 

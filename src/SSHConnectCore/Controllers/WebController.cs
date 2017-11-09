@@ -26,7 +26,7 @@ namespace SSHConnectCore.Controllers
             this.appSettings = settings.Value;
         }
 
-        protected virtual IActionResult DoAPIAction()
+        protected IActionResult DoAPIAction()
         {
             string result = APICall();
             result = JsonConvert.DeserializeObject(result).ToString();
@@ -58,7 +58,7 @@ namespace SSHConnectCore.Controllers
                     break;
                 case "Error":
                     vm.Status = result;
-                    TempData["MessageDetails"] = errorMessage;
+                    vm.Details = errorMessage;
                     break;
                 default:
                     vm.Status = "Error";

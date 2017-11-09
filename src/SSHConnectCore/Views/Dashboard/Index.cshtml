@@ -4,24 +4,24 @@
 
 <div class="container-fluid">
 
-            <h1 class="page-header">Dashboard</h1>
-            
-            <div id="messages-div">@Html.Partial("MessagesPartial")</div>
+    <h1 class="page-header">Dashboard</h1>
 
-            <div class="row">
-                <div class="col-md-4 block">
-                    <div id="shutdown-div" class="btn circle btn-primary"><p>Shutdown</p></div>
-                </div>
-                <div class="col-md-4 block">
-                    <div id="restart-div" class="btn circle btn-primary"><p>Restart</p></div>
-                </div>
-                <div class="col-md-4 block">
-                    <div id="kp-div" class="btn circle btn-primary">
-                        <div><p>Kill Process</p></div>
-                        <div><select id="kp-select" asp-items="@ViewBag.KillProcessSelectList" class="form-control"></select></div>
-                    </div>
-                </div>
+    <div id="messages-div">@Html.Partial("MessagesPartial")</div>
+
+    <div class="row">
+        <div class="col-md-4 block">
+            <div id="shutdown-div" class="btn circle btn-primary"><p>Shutdown</p></div>
+        </div>
+        <div class="col-md-4 block">
+            <div id="restart-div" class="btn circle btn-primary"><p>Restart</p></div>
+        </div>
+        <div class="col-md-4 block">
+            <div id="kp-div" class="btn circle btn-primary">
+                <div><p>Kill Process</p></div>
+                <div><select id="kp-select" asp-items="@ViewBag.KillProcessSelectList" class="form-control"></select></div>
             </div>
+        </div>
+    </div>
 
 </div>
 
