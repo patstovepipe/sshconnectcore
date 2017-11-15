@@ -1,7 +1,6 @@
 ﻿using Renci.SshNet;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.SSH.SSHCommands;
-using SSHConnectCore.Utilities;
 using System;
 using System.Net.Sockets;
 using System.Reflection;

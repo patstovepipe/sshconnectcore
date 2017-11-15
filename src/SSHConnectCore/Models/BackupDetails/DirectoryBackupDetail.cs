@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SSHConnectCore.Models.BackupDetails
+﻿namespace SSHConnectCore.Models.BackupDetails
 {
     public class DirectoryBackupDetail
     {

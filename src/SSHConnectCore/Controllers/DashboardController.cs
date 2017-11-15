@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SSHConnectCore.Configuration;
-using System.Net.Http;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SSHConnectCore.Models.Dashboard;
 
 namespace SSHConnectCore.Controllers
 {

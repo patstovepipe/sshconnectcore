@@ -8,7 +8,6 @@ using Renci.SshNet;
 using System.Collections.Generic;
 using SSHConnectCore.Models.BackupDetails;
 using SSHConnectCore.Models.SSH;
-using SSHConnectCore.Utilities;
 using System.Reflection;
 using System.Net.Sockets;
 
