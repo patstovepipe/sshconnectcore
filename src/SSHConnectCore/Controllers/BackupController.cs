@@ -139,7 +139,11 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Download(string id)
         {
-            var detail = BackupDetails.StoredBackupDetails().Get(id);
+            return DoAPIAction();
+        }
+
+        public IActionResult Upload(string id)
+        {
             return DoAPIAction();
         }
 

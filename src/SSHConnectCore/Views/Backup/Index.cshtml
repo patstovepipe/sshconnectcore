@@ -16,6 +16,7 @@
                     <th></th>
                     <th></th>
                     <th></th>
+                    <th></th>
                     <th>File System Type</th>
                     <th>Backup Directory</th>
                     <th>Base Directory</th>
@@ -63,6 +64,15 @@
                                 </a>
                             }
                         </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                            {
+                                <a class="upload-a" asp-controller="Backup" asp-action="Upload"
+                                   asp-route-id="@detail.ID">
+                                    <i class="fa fa-upload" aria-hidden="true"></i>
+                                </a>
+                            }
+                        </td>
                         <td>@detail.FileSystemType</td>
                         <td>@detail.BackupDirectory</td>
                         <td>@detail.BaseDirectory</td>
@@ -79,6 +89,19 @@
     $(function () {
         $('.download-a').click(function (e) {
             e.preventDefault(); 
+
+            $.ajax({
+                url: $(this).attr('href'),
+                success: function (data) {
+                    $('#messages-div').html(data);
+                }
+            });
+        });
+    });
+
+    $(function () {
+        $('.upload-a').click(function (e) {
+            e.preventDefault();
 
             $.ajax({
                 url: $(this).attr('href'),

@@ -1,6 +1,7 @@
 ﻿using Renci.SshNet;
 using SSHConnectCore.Models.BackupDetails;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SSHConnectCore.Models.SSH.SSHCommands
 {
@@ -11,22 +12,22 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
             var backupDetailList = (List<BackupDetail>)args[0];
             var results = new List<bool>();
 
-            foreach (var backupDetails in backupDetailList)
+            foreach (var backupDetail in backupDetailList)
             {
-                if (backupDetails.FileSystemType == FileSystemType.File)
+                if (backupDetail.FileSystemType == FileSystemType.File)
                 {
-                    var source = this.downloadDirectory + backupDetails.ActualName;
-                    var target = backupDetails.BaseDirectory;
-                    var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
+                    var source = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString(), backupDetail.ActualName).Replace('\\', '/');
+                    var target = Path.Combine(backupDetail.BaseDirectory);
+                    var rsyncCommand = string.Format("sudo rsync -az --perms --chmod=777 {0} {1}", source, target);
 
                     var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
                     results.Add(result.ExitStatus == 0);
                 }
-                else if (backupDetails.FileSystemType == FileSystemType.Directory)
+                else if (backupDetail.FileSystemType == FileSystemType.Directory)
                 {
-                    var source = this.downloadDirectory + backupDetails.ActualName;
-                    var target = backupDetails.BaseDirectory;
-                    var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
+                    var source = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString(), backupDetail.ActualName).Replace('\\', '/');
+                    var target = Path.Combine(backupDetail.BaseDirectory);
+                    var rsyncCommand = string.Format("sudo rsync -az --perms --chmod=777 {0} {1}", source, target);
 
                     var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
                     results.Add(result.ExitStatus == 0);
