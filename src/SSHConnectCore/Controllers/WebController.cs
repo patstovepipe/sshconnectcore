@@ -22,7 +22,7 @@ namespace SSHConnectCore.Controllers
             this.appSettings = settings.Value;
         }
 
-        protected IActionResult DoAPIAction()
+        protected virtual IActionResult DoAPIAction()
         {
             string result = APICall();
             result = JsonConvert.DeserializeObject(result).ToString();

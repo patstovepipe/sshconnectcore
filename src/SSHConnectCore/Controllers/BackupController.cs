@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.BackupDetails;
+using SSHConnectCore.Models.Dashboard;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,9 +21,10 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.backupDetails = BackupDetails.List();
+            var model = new SearchViewModel();
+            model.BackupDetails = BackupDetails.List();
 
-            return View();
+            return View(model);
         }
 
         [HttpGet]
@@ -145,6 +148,20 @@ namespace SSHConnectCore.Controllers
         public IActionResult Upload(string id)
         {
             return DoAPIAction();
+        }
+
+        protected override IActionResult DoAPIAction()
+        {
+            string result = APICall();
+
+            result = JsonConvert.DeserializeObject(result).ToString();
+            var vm = SetMessage(result);
+
+            var model = new SearchViewModel();
+            model.BackupDetails = BackupDetails.List();
+            model.MessageViewModel = vm;
+
+            return View("Index", model);
         }
 
         public IActionResult Delete(string id)
