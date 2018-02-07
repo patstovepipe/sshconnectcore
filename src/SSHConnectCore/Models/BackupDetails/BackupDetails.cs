@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SSHConnectCore.Configuration;
+using SSHConnectCore.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,6 +55,19 @@ namespace SSHConnectCore.Models.BackupDetails
         {
             if (appSettings == null)
                 appSettings = settings;
+        }
+
+        public static List<BackupDetail> List(SearchViewModel model)
+        {
+            var fileSystemType = FileSystemType_TryParse(model.FileSystemType);
+            var backupDirectory = BackupDirectory_TryParse(model.BackupDirectory);
+
+            return List().Where(d => 
+                (model.FileSystemType == "All" || d.FileSystemType == fileSystemType)  
+                && (model.BackupDirectory == "All" || d.BackupDirectory == backupDirectory)
+                && (string.IsNullOrEmpty(model.BaseDirectory) || d.BaseDirectory.Contains(model.BaseDirectory, StringComparison.OrdinalIgnoreCase))
+                && (string.IsNullOrEmpty(model.ActualName) || d.ActualName.Contains(model.ActualName, StringComparison.OrdinalIgnoreCase))
+            ).ToList();
         }
 
         public static List<BackupDetail> List()
@@ -125,6 +139,16 @@ namespace SSHConnectCore.Models.BackupDetails
                 return appSettings.linuxServerDirectory;
             else
                 throw new Exception("Windows or Linux platform not found.");
+        }
+
+        public static FileSystemType FileSystemType_TryParse(string fileSystemType)
+        {
+            return Enum.TryParse(fileSystemType, out FileSystemType result) ? result : FileSystemType.File;
+        }
+
+        public static BackupDirectory BackupDirectory_TryParse(string backupDirectory)
+        {
+            return Enum.TryParse(backupDirectory, out BackupDirectory result) ? result : BackupDirectory.Other;
         }
     }
 }

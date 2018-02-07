@@ -114,19 +114,10 @@ namespace SSHConnectCore.Controllers
         {
             var backupDetailsList = new List<BackupDetail>();
 
-            backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
-
-            //var fileBackupDetails = new BackupDetail();
-            //fileBackupDetails.BaseDirectory = "/home/patrick/";
-            //fileBackupDetails.SavedName = "test-download.txt";
-            //fileBackupDetails.ActualName = "test-download.txt";
-            //backupDetailsList.Add(fileBackupDetails);
-
-            //var directoryBackupDetails = new BackupDetail();
-            //directoryBackupDetails.BaseDirectory = "/home/patrick/";
-            //directoryBackupDetails.SavedName = "test";
-            //directoryBackupDetails.ActualName = "test";
-            //backupDetailsList.Add(directoryBackupDetails);
+            if (string.IsNullOrEmpty(id))
+                backupDetailsList = BackupDetails.StoredBackupDetails();
+            else
+                backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
 
             var args = new object[] { backupDetailsList };
 
@@ -142,19 +133,10 @@ namespace SSHConnectCore.Controllers
         {
             var backupDetailsList = new List<BackupDetail>();
 
-            backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
-
-            //var fileBackupDetails = new BackupDetail();
-            //fileBackupDetails.BaseDirectory = "/home/patrick/";
-            //fileBackupDetails.SavedName = "test-upload.txt";
-            //fileBackupDetails.ActualName = "test-upload.txt";
-            //backupDetailsList.Add(fileBackupDetails);
-
-            //var directoryBackupDetails = new BackupDetail();
-            //directoryBackupDetails.BaseDirectory = "/home/patrick/";
-            //directoryBackupDetails.SavedName = "test-upload";
-            //directoryBackupDetails.ActualName = "test-upload";
-            //backupDetailsList.Add(directoryBackupDetails);
+            if (string.IsNullOrEmpty(id))
+                backupDetailsList = BackupDetails.StoredBackupDetails();
+            else
+                backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
 
             var args = new object[] { backupDetailsList };
 

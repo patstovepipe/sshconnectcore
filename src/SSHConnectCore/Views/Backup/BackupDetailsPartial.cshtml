@@ -1,0 +1,71 @@
+﻿@using SSHConnectCore.Models.BackupDetails;
+@model List<BackupDetail>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>File System Type</th>
+            <th>Backup Directory</th>
+            <th>Base Directory</th>
+            <th>Name</th>
+            <th>Backed Up</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var detail in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                    {
+                        <a asp-area="" asp-controller="Backup" asp-action="NewEdit" asp-route-id="@detail.ID" data-toggle="tooltip" title="Edit">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Backup" asp-action="NewEdit" data-toggle="tooltip" title="New"
+                           asp-route-filesystemtype="@detail.FileSystemType"
+                           asp-route-backupdirectory="@detail.BackupDirectory"
+                           asp-route-actualname="@detail.ActualName">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </a>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                    {
+                        <a asp-area="" asp-controller="Backup" asp-action="Delete" asp-route-id="@detail.ID" data-toggle="tooltip" title="Delete">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </a>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                    {
+                        <a class="download-a" asp-controller="Backup" asp-action="Download" asp-route-id="@detail.ID" data-toggle="tooltip" title="Download">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                        </a>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(detail.BaseDirectory))
+                    {
+                        <a class="upload-a" asp-controller="Backup" asp-action="Upload" asp-route-id="@detail.ID" data-toggle="tooltip" title="Upload">
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                        </a>
+                    }
+                </td>
+                <td>@detail.FileSystemType</td>
+                <td>@detail.BackupDirectory</td>
+                <td>@detail.BaseDirectory</td>
+                <td>@detail.ActualName</td>
+                <td>@detail.BackedUp</td>
+            </tr>
+        }
+    </tbody>
+</table>

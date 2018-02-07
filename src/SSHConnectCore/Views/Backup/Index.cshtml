@@ -1,16 +1,66 @@
-﻿@using SSHConnectCore.Models.BackupDetails
+﻿@using SSHConnectCore.Models.BackupDetails;
 @model SearchViewModel
 @{
     ViewData["Title"] = "Backup";
 }
 
 <div class="container-fluid">
-
     <h1 class="page-header">Backup</h1>
 
+    <form asp-controller="Backup" asp-action="Index" method="post">
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <td>
+                            <label for="FileSystemType">File System Type</label>
+                            <select asp-for="FileSystemType" asp-items="Html.GetEnumSelectList<FileSystemType>()" class="form-control">
+                                <option selected="selected" value="All">All</option>
+                            </select>
+                        </td>
+                        <td>
+                            <label for="BackupDirectory">Backup Directory</label>
+                            <select asp-for="BackupDirectory" asp-items="Html.GetEnumSelectList<BackupDirectory>()" class="form-control">
+                                <option selected="selected" value="All">All</option>
+                            </select>
+                        </td>
+                        <td>
+                            <label for="BaseDirectory">Base Directory</label>
+                            <input asp-for="BaseDirectory" class="form-control" />
+                        </td>
+                        <td>
+                            <label for="ActualName">Name</label>
+                            <input asp-for="ActualName" class="form-control" />
+                        </td>
+                        <td>
+                            <label for="BackedUp">Backed Up</label>
+                            <input asp-for="BackedUp" class="form-check-input display-block" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            @*<a asp-area="" asp-controller="Backup" asp-action="Index" class="btn btn-primary" role="button"
+           asp-route-filesystemtype="@Model.FileSystemType"
+           asp-route-backupdirectory="@Model.BackupDirectory"
+           asp-route-basedirectory="@Model.BaseDirectory"
+           asp-route-actualname="@Model.ActualName"
+           asp-route-backedup="@Model.BackedUp">
+            Search
+        </a>*@
+
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-area="" asp-controller="Backup" asp-action="Download" class="btn btn-primary" role="button">Download All</a>
+            <a asp-area="" asp-controller="Backup" asp-action="Upload" class="btn btn-primary" role="button">Upload All</a>
+        </div>
+    </form>
+
+    <div></div>
     <div id="messages-div">@Html.Partial("MessagesPartial", Model.MessageViewModel)</div>
 
     <div id="search-div" class="table-responsive">
-        @Html.Partial("SearchPartial", Model.BackupDetails)
+        @Html.Partial("BackupDetailsPartial", Model.BackupDetails)
     </div>
-</div>>
+</div>

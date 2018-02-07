@@ -19,12 +19,21 @@ namespace SSHConnectCore.Controllers
             BackupDetails.SetAppSettings(settings.Value);
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
+
             var model = new SearchViewModel();
             model.BackupDetails = BackupDetails.List();
 
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Index(SearchViewModel model)
+        {
+            model.BackupDetails = BackupDetails.List(model);
+            return View("Index", model);
         }
 
         [HttpGet]
@@ -40,8 +49,8 @@ namespace SSHConnectCore.Controllers
             else
             {
                 backupDetail = new BackupDetail();
-                backupDetail.FileSystemType = Enum.TryParse(fileSystemType, out FileSystemType result) ? result : FileSystemType.File;
-                backupDetail.BackupDirectory = Enum.TryParse(backupDirectory, out BackupDirectory result2) ? result2 : BackupDirectory.Other;
+                backupDetail.FileSystemType = BackupDetails.FileSystemType_TryParse(fileSystemType);
+                backupDetail.BackupDirectory = BackupDetails.BackupDirectory_TryParse(backupDirectory);
                 backupDetail.ActualName = actualName;
             }
 
