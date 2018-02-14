@@ -41,16 +41,7 @@
             </table>
         </div>
 
-        <div>
-            @*<a asp-area="" asp-controller="Backup" asp-action="Index" class="btn btn-primary" role="button"
-           asp-route-filesystemtype="@Model.FileSystemType"
-           asp-route-backupdirectory="@Model.BackupDirectory"
-           asp-route-basedirectory="@Model.BaseDirectory"
-           asp-route-actualname="@Model.ActualName"
-           asp-route-backedup="@Model.BackedUp">
-            Search
-        </a>*@
-
+        <div class="mb-20">
             <button type="submit" class="btn btn-primary">Search</button>
             <a asp-area="" asp-controller="Backup" asp-action="Download" class="btn btn-primary" role="button">Download All</a>
             <a asp-area="" asp-controller="Backup" asp-action="Upload" class="btn btn-primary" role="button">Upload All</a>

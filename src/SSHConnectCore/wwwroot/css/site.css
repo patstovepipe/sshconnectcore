@@ -213,3 +213,7 @@ textarea {
 .display-block {
     display: block;
 }
+
+.mb-20 {
+    margin-bottom: 20px;
+}
