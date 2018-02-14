@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SSHConnectCore.Models.Dashboard;
-using System;
+﻿using SSHConnectCore.Models.Dashboard;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SSHConnectCore.Models.BackupDetails
 {
