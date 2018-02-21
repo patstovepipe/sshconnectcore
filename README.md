@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/patstovepipe/sshconnectcore.svg?branch=master)](https://travis-ci.org/patstovepipe/sshconnectcore)
+
 # sshconnectcore
 
 Website / API to manage files/roms on a [retropie](https://retropie.org.uk/) install.
