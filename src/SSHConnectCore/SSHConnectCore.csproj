@@ -9,6 +9,7 @@
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8+wp8+wpa81;dnxcore50</PackageTargetFallback>
     <DebugType>portable</DebugType>
+    <PackageVersion>1.0.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,7 +37,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.2" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.2.281" />
   </ItemGroup>
@@ -45,6 +46,6 @@
     <Exec Command="bower install" />
     <Exec Command="dotnet bundle" />
   </Target>
- 
+
 
 </Project>
