@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9939AC80-80EC-40DA-AA89-842A3799EB34}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3222C7A6-1BCF-449E-82E1-96A207F1EC45}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSHConnectCore", "src\SSHConnectCore\SSHConnectCore.csproj", "{00910D5E-D4BE-4642-BEBE-4007177E2428}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src.tests", "src.tests", "{66EB00C1-1DB3-49A8-B7E5-24458EC3CA94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSHConnectCore.Tests", "src.tests\SSHConnectCore.Tests\SSHConnectCore.Tests.csproj", "{51E77AFE-E5D7-4638-87FB-757967B68AFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,11 +23,19 @@ Global
 		{00910D5E-D4BE-4642-BEBE-4007177E2428}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00910D5E-D4BE-4642-BEBE-4007177E2428}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00910D5E-D4BE-4642-BEBE-4007177E2428}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51E77AFE-E5D7-4638-87FB-757967B68AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51E77AFE-E5D7-4638-87FB-757967B68AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51E77AFE-E5D7-4638-87FB-757967B68AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51E77AFE-E5D7-4638-87FB-757967B68AFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{00910D5E-D4BE-4642-BEBE-4007177E2428} = {9939AC80-80EC-40DA-AA89-842A3799EB34}
+		{51E77AFE-E5D7-4638-87FB-757967B68AFB} = {66EB00C1-1DB3-49A8-B7E5-24458EC3CA94}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {11677BA5-8E6D-45AC-A8F7-55D2244A128B}
 	EndGlobalSection
 EndGlobal
