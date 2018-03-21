@@ -8,6 +8,7 @@ namespace SSHConnectCore.Models.BackupDetails
     public enum BackupDirectory { Other, Roms };
     public enum FileSystemType { File, Directory };
 
+    [Serializable]
     public class BackupDetail
     {
         public Guid ID { get; set; }

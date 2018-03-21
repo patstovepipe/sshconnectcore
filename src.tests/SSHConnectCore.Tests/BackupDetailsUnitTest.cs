@@ -3,15 +3,19 @@ using Xunit;
 using SSHConnectCore.Models.BackupDetails;
 using System.Collections.Generic;
 using System.Linq;
+using SSHConnectCore.Extensions;
 
 namespace SSHConnectCore.Tests
 {
     public class BackupDetailsUnitTest
     {
+        private static readonly Lazy<List<BackupDetail>> lazyBackupDetailsTestList = new Lazy<List<BackupDetail>>(() => BackupDetailsTestList());
+        private static List<BackupDetail> backupDetailsTestList => lazyBackupDetailsTestList.Value.ToList();
+
         [Fact]
-        public void PassingTest()
+        public void ExcludeTest()
         {
-            var testList = BackupDetailsTestList();
+            var testList = backupDetailsTestList;
             var firstGuid = testList.First().ID;
             var count = testList.Count();
             testList = testList.Exclude(firstGuid);
@@ -20,14 +24,22 @@ namespace SSHConnectCore.Tests
         }
 
         [Fact]
-        public void FailingTest()
+        public void GetTest()
         {
-            var testList = BackupDetailsTestList();
-            var firstGuid = testList.First().ID;
-            var count = testList.Count();
-            testList = testList.Exclude(firstGuid);
+            var testList = backupDetailsTestList;
 
-            Assert.Equal(count, testList.Count());
+            var first = new BackupDetail();
+            try
+            {
+                first = testList.First().DeepCopy();
+            }
+            catch (Exception ex) {
+                var x = 1;
+            }
+
+            var gotObject = testList.Get(first.ID);
+
+            Assert.Equal(first, gotObject);
         }
 
         private static List<BackupDetail> BackupDetailsTestList()
