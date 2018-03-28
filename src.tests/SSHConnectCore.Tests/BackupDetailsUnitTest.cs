@@ -29,13 +29,7 @@ namespace SSHConnectCore.Tests
             var testList = backupDetailsTestList;
 
             var first = new BackupDetail();
-            try
-            {
-                first = testList.First().DeepCopy();
-            }
-            catch (Exception ex) {
-                var x = 1;
-            }
+            first = testList.First().DeepCopy();
 
             var gotObject = testList.Get(first.ID);
 

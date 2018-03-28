@@ -1,5 +1,8 @@
 language: csharp
 mono: none
 dotnet: 1.1.5
-script:
+install:
  - dotnet restore
+script:
+ - dotnet build
+ - dotnet test src.tests/SSHConnectCore.Tests/SSHConnectCore.Tests.csproj

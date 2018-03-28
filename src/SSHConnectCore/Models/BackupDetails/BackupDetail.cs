@@ -24,5 +24,24 @@ namespace SSHConnectCore.Models.BackupDetails
         [JsonConverter(typeof(StringEnumConverter))]
         public FileSystemType FileSystemType { get; set; }
         public bool? BackedUp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var toCompareWith = other as BackupDetail;
+            if (toCompareWith == null)
+                return false;
+            return this.ID == toCompareWith.ID 
+                && this.BaseDirectory == toCompareWith.BaseDirectory
+                && this.BackupDirectory == toCompareWith.BackupDirectory
+                && this.SavedName == toCompareWith.SavedName
+                && this.ActualName == toCompareWith.ActualName
+                && this.FileSystemType == toCompareWith.FileSystemType
+                && this.BackedUp == toCompareWith.BackedUp;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
