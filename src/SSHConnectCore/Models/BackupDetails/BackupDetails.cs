@@ -37,11 +37,11 @@ namespace SSHConnectCore.Models.BackupDetails
             return list.Where(sbd => !(sbd.ID == id)).ToList();
         }
 
-        public static void Save(this List<BackupDetail> list)
+        public static void Save(this List<BackupDetail> list, string fullFileName = null)
         {
             string strJson = JsonConvert.SerializeObject(list);
 
-            File.WriteAllText(BackupDetails.backupDetailsFullFileName, strJson);
+            File.WriteAllText(fullFileName ?? BackupDetails.backupDetailsFullFileName, strJson);
         }
     }
 
@@ -62,8 +62,8 @@ namespace SSHConnectCore.Models.BackupDetails
             var fileSystemType = FileSystemType_TryParse(model.FileSystemType);
             var backupDirectory = BackupDirectory_TryParse(model.BackupDirectory);
 
-            return List().Where(d => 
-                (model.FileSystemType == "All" || d.FileSystemType == fileSystemType)  
+            return List().Where(d =>
+                (model.FileSystemType == "All" || d.FileSystemType == fileSystemType)
                 && (model.BackupDirectory == "All" || d.BackupDirectory == backupDirectory)
                 && (string.IsNullOrEmpty(model.BaseDirectory) || d.BaseDirectory.Contains(model.BaseDirectory, StringComparison.OrdinalIgnoreCase))
                 && (string.IsNullOrEmpty(model.ActualName) || d.ActualName.Contains(model.ActualName, StringComparison.OrdinalIgnoreCase))
@@ -122,10 +122,10 @@ namespace SSHConnectCore.Models.BackupDetails
             return serverBackupDetails;
         }
 
-        public static List<BackupDetail> StoredBackupDetails()
+        public static List<BackupDetail> StoredBackupDetails(string fullFileName = null)
         {
-            var storedBackupDetails = System.IO.File.Exists(backupDetailsFullFileName)
-                ? JsonConvert.DeserializeObject<List<BackupDetail>>(File.ReadAllText(backupDetailsFullFileName))
+            var storedBackupDetails = System.IO.File.Exists(fullFileName ?? backupDetailsFullFileName)
+                ? JsonConvert.DeserializeObject<List<BackupDetail>>(File.ReadAllText(fullFileName ?? backupDetailsFullFileName))
                 : new List<BackupDetail>();
 
             return storedBackupDetails;

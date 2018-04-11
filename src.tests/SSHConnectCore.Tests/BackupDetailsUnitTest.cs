@@ -36,6 +36,19 @@ namespace SSHConnectCore.Tests
             Assert.Equal(first, gotObject);
         }
 
+        [Fact]
+        public void SaveTest()
+        {
+            var testList = backupDetailsTestList;
+            var fileName = "backup_details_test.json";
+
+            testList.Save(fileName);
+
+            var savedList = BackupDetails.StoredBackupDetails(fileName);
+
+            Assert.Equal(testList, savedList);
+        }
+
         private static List<BackupDetail> BackupDetailsTestList()
         {
             var backupDetails = new List<BackupDetail>();
