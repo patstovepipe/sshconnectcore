@@ -10,18 +10,17 @@ using SSHConnectCore.Models.BackupDetails;
 using SSHConnectCore.Models.SSH;
 using System.Reflection;
 using System.Net.Sockets;
+using SSHConnectCore.Models;
 
 namespace SSHConnectCore.Controllers
 {
     public class SSHConnectController : Controller
     {
-        private SSHConnection sshConnection;
-        private readonly AppSettings appSettings;
+        private readonly SSHConnection sshConnection;
 
-        public SSHConnectController(IOptions<AppSettings> settings)
-        {
-            this.appSettings = settings.Value;
-            this.sshConnection = new SSHConnection(this.appSettings);
+        public SSHConnectController(SSHConnection sshConnection)
+        { 
+            this.sshConnection = sshConnection;
         }
 
         public IActionResult HasConnection()

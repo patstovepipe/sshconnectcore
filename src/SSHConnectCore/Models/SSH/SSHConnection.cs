@@ -1,4 +1,5 @@
-﻿using Renci.SshNet;
+﻿using Microsoft.Extensions.Options;
+using Renci.SshNet;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.SSH.SSHCommands;
 using System;
@@ -11,7 +12,7 @@ namespace SSHConnectCore.Models.SSH
     {
         public string[] killProcessList;
 
-        public SSHConnection(AppSettings appSettings) : base(appSettings)
+        public SSHConnection(IOptions<AppSettings> settings, RemoteServer server) : base(settings, server)
         {
             this.killProcessList = this.appSettings.killProcessList.Split(',');
         }

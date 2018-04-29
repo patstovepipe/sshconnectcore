@@ -1,4 +1,5 @@
-﻿using SSHConnectCore.Configuration;
+﻿using Microsoft.Extensions.Options;
+using SSHConnectCore.Configuration;
 
 namespace SSHConnectCore.Models
 {
@@ -7,10 +8,10 @@ namespace SSHConnectCore.Models
         protected AppSettings appSettings;
         protected RemoteServer server;
 
-        public Connection(AppSettings appSettings)
+        public Connection(IOptions<AppSettings> settings, RemoteServer remoteServer)
         {
-            this.appSettings = appSettings;
-            this.server = new RemoteServer(this.appSettings);
+            this.appSettings = settings.Value;
+            this.server = remoteServer;
         }
     }
 }

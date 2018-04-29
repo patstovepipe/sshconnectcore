@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Filters;
+using SSHConnectCore.Models;
+using SSHConnectCore.Models.SSH;
 
 namespace SSHConnectCore
 {
@@ -35,6 +37,9 @@ namespace SSHConnectCore
 
             // for TempData
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+
+            services.AddSingleton<SSHConnection>();
+            services.AddSingleton<RemoteServer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,13 +66,6 @@ namespace SSHConnectCore
                     name: "default",
                     template: "{controller=Dashboard}/{action=Index}/{id?}");
             });
-
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=Backup}/{action=New}/{id?}");
-            //});
         }
     }
 }

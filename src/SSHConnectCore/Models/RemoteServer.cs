@@ -1,4 +1,5 @@
-﻿using SSHConnectCore.Configuration;
+﻿using Microsoft.Extensions.Options;
+using SSHConnectCore.Configuration;
 using System;
 
 namespace SSHConnectCore.Models
@@ -10,8 +11,10 @@ namespace SSHConnectCore.Models
         public string username { get; set; }
         public string password { get; set; }
 
-        public RemoteServer(AppSettings appSettings)
+        public RemoteServer(IOptions<AppSettings> settings)
         {
+            var appSettings = settings.Value;
+
             this.host = appSettings.sshServer.host; ;
             this.port = Convert.ToInt32(appSettings.sshServer.port);
             this.username = appSettings.sshServer.username;
