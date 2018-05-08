@@ -60,6 +60,12 @@ namespace SSHConnectCore.Models.SSH
             return RunCommand(command, args);
         }
 
+        public object ExistsCommand(object[] args)
+        {
+            SSHCommand command = new ExistsCommand();
+            return RunCommand(command, args);
+        }
+
         private object RunCommand(SSHCommand command, object[] args = null)
         {
             command.downloadDirectory = this.appSettings.downloadDirectory;

@@ -14,24 +14,12 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
 
             foreach (var backupDetail in backupDetailList)
             {
-                if (backupDetail.FileSystemType == FileSystemType.File)
-                {
-                    var source = Path.Combine(backupDetail.BaseDirectory, backupDetail.ActualName);
-                    var target = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString());
-                    var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
+                var source = Path.Combine(backupDetail.BaseDirectory, backupDetail.ActualName);
+                var target = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString());
+                var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
 
-                    var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
-                    results.Add(result.ExitStatus == 0);
-                }
-                else if (backupDetail.FileSystemType == FileSystemType.Directory)
-                {
-                    var source = Path.Combine(backupDetail.BaseDirectory, backupDetail.ActualName);
-                    var target = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString());
-                    var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
-
-                    var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
-                    results.Add(result.ExitStatus == 0);
-                }
+                var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
+                results.Add(result.ExitStatus == 0);
             }
 
             return results;

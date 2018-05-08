@@ -17,20 +17,26 @@ namespace SSHConnectCore.Models.BackupDetails
         public string BaseDirectory { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public BackupDirectory? BackupDirectory { get; set; }
-        public string SavedName { get;  set; }
+        public string SavedName { get; set; }
         [Required]
         [Display(Name = "Name")]
-        public string ActualName { get;  set; }
+        public string ActualName { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public FileSystemType FileSystemType { get; set; }
-        public bool? BackedUp { get; set; }
+        public bool BackedUp { get; set; }
+        public bool ExistsOnRemote { get; set; }
+        public DateTime? RemoteLastCheck { get; set; }
+        public string MD5CheckSum { get; set; }
+        public string RemoteMD5CheckSum { get; set; }
+
+        public bool BackupDetailsCreated => !string.IsNullOrWhiteSpace(this.BaseDirectory);
 
         public override bool Equals(object other)
         {
             var toCompareWith = other as BackupDetail;
             if (toCompareWith == null)
                 return false;
-            return this.ID == toCompareWith.ID 
+            return this.ID == toCompareWith.ID
                 && this.BaseDirectory == toCompareWith.BaseDirectory
                 && this.BackupDirectory == toCompareWith.BackupDirectory
                 && this.SavedName == toCompareWith.SavedName
@@ -42,6 +48,14 @@ namespace SSHConnectCore.Models.BackupDetails
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public bool? SameCheckSum()
+        {
+            if (this.FileSystemType == FileSystemType.File)
+                return MD5CheckSum.Equals(RemoteMD5CheckSum) ? true : false;
+
+            return null;
         }
     }
 }

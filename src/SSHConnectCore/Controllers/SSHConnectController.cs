@@ -18,8 +18,9 @@ namespace SSHConnectCore.Controllers
     {
         private readonly SSHConnection sshConnection;
 
-        public SSHConnectController(SSHConnection sshConnection)
-        { 
+        public SSHConnectController(IOptions<AppSettings> settings, SSHConnection sshConnection)
+        {
+            BackupDetails.SetAppSettings(settings.Value);
             this.sshConnection = sshConnection;
         }
 
@@ -140,6 +141,25 @@ namespace SSHConnectCore.Controllers
             var args = new object[] { backupDetailsList };
 
             var results = (List<bool>)sshConnection.UploadCommand(args);
+
+            if (results.All(r => r))
+                return Json("Success");
+            else
+                return Json("Error");
+        }
+
+        public IActionResult Exists(string id)
+        {
+            var backupDetailsList = new List<BackupDetail>();
+
+            if (string.IsNullOrEmpty(id))
+                backupDetailsList = BackupDetails.StoredBackupDetails();
+            else
+                backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
+
+            var args = new object[] { backupDetailsList };
+
+            var results = (List<bool>)sshConnection.ExistsCommand(args);
 
             if (results.All(r => r))
                 return Json("Success");

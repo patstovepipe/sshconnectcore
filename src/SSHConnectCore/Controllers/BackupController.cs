@@ -95,7 +95,7 @@ namespace SSHConnectCore.Controllers
                                 var counter = 2;
                                 name = counter + "-" + model.ActualName;
 
-                                while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
+                                while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(ServerDir(), model.BackupDirectory.ToString(), name))
                                         || storedBackupDetails.Exists(sbd => sbd.SavedName == name && sbd.FileSystemType == model.FileSystemType)))
                                 {
                                     counter++;
@@ -112,7 +112,7 @@ namespace SSHConnectCore.Controllers
                                 var counter = 2;
                                 name = counter + "-" + model.ActualName;
 
-                                while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(ServerDir(), BackupDirectory.Other.ToString(), name))
+                                while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(ServerDir(), model.BackupDirectory.ToString(), name))
                                     || storedBackupDetails.Exists(sbd => sbd.SavedName == name && sbd.FileSystemType == model.FileSystemType)))
                                 {
                                     counter++;

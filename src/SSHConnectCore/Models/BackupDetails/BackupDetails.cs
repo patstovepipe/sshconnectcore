@@ -43,6 +43,11 @@ namespace SSHConnectCore.Models.BackupDetails
 
             File.WriteAllText(fullFileName ?? BackupDetails.backupDetailsFullFileName, strJson);
         }
+
+        public static void Update(this List<BackupDetail> list)
+        {
+            
+        }
     }
 
     public static class BackupDetails

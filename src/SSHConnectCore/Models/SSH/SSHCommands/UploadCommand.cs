@@ -14,24 +14,12 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
 
             foreach (var backupDetail in backupDetailList)
             {
-                if (backupDetail.FileSystemType == FileSystemType.File)
-                {
-                    var source = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString(), backupDetail.ActualName).Replace('\\', '/');
-                    var target = Path.Combine(backupDetail.BaseDirectory);
-                    var rsyncCommand = string.Format("sudo rsync -az --perms --chmod=777 {0} {1}", source, target);
+                var source = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString(), backupDetail.ActualName).Replace('\\', '/');
+                var target = Path.Combine(backupDetail.BaseDirectory);
+                var rsyncCommand = string.Format("sudo rsync -az --perms --chmod=777 {0} {1}", source, target);
 
-                    var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
-                    results.Add(result.ExitStatus == 0);
-                }
-                else if (backupDetail.FileSystemType == FileSystemType.Directory)
-                {
-                    var source = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString(), backupDetail.ActualName).Replace('\\', '/');
-                    var target = Path.Combine(backupDetail.BaseDirectory);
-                    var rsyncCommand = string.Format("sudo rsync -az --perms --chmod=777 {0} {1}", source, target);
-
-                    var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
-                    results.Add(result.ExitStatus == 0);
-                }
+                var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
+                results.Add(result.ExitStatus == 0);
             }
 
             return results;
