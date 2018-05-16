@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace SSHConnectCore.Models.BackupDetails
 {
@@ -46,7 +47,21 @@ namespace SSHConnectCore.Models.BackupDetails
 
         public static void Update(this List<BackupDetail> list)
         {
-            
+            var storedBackupDetails = BackupDetails.StoredBackupDetails();
+
+            list.ForEach(sbd => storedBackupDetails.UpdateSingle(sbd));
+
+            storedBackupDetails.Save();
+        }
+
+        public static void UpdateSingle(this List<BackupDetail> list, BackupDetail newBackupDetail)
+        {
+            var oldBackupDetail = list.Where(sbd => sbd.ID == newBackupDetail.ID).FirstOrDefault();
+            if (oldBackupDetail != null)
+            {
+                var index = list.IndexOf(oldBackupDetail);
+                list[index] = newBackupDetail;
+            }
         }
     }
 
@@ -90,6 +105,8 @@ namespace SSHConnectCore.Models.BackupDetails
                 {
                     serverBackupDetails.Remove(detail);
                     found.BackedUp = true;
+                    if (!string.IsNullOrWhiteSpace(detail.MD5CheckSum))
+                        found.MD5CheckSum = detail.MD5CheckSum;
                     serverBackupDetails.Add(found);
                     storedBackupDetails.Remove(found);
                 }
@@ -112,6 +129,7 @@ namespace SSHConnectCore.Models.BackupDetails
                 fileBackupDetail.ActualName = fileBackupDetail.SavedName;
                 fileBackupDetail.FileSystemType = FileSystemType.File;
                 fileBackupDetail.BackupDirectory = backupDirectory;
+                fileBackupDetail.MD5CheckSum = CalculateMD5(file);
                 serverBackupDetails.Add(fileBackupDetail);
             }
             foreach (string dir in Directory.GetDirectories(serverDir))
@@ -154,6 +172,18 @@ namespace SSHConnectCore.Models.BackupDetails
         public static BackupDirectory BackupDirectory_TryParse(string backupDirectory)
         {
             return Enum.TryParse(backupDirectory, out BackupDirectory result) ? result : BackupDirectory.Other;
+        }
+
+        private static string CalculateMD5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
         }
     }
 }

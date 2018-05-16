@@ -30,6 +30,9 @@ namespace SSHConnectCore.Models.BackupDetails
         public string RemoteMD5CheckSum { get; set; }
 
         public bool BackupDetailsCreated => !string.IsNullOrWhiteSpace(this.BaseDirectory);
+        public bool IsFile => this.FileSystemType == FileSystemType.File;
+        public bool HasCheckSums => !string.IsNullOrWhiteSpace(this.MD5CheckSum) && !string.IsNullOrWhiteSpace(this.RemoteMD5CheckSum);
+        public bool SameCheckSum => this.MD5CheckSum.Equals(this.RemoteMD5CheckSum);
 
         public override bool Equals(object other)
         {
@@ -41,21 +44,12 @@ namespace SSHConnectCore.Models.BackupDetails
                 && this.BackupDirectory == toCompareWith.BackupDirectory
                 && this.SavedName == toCompareWith.SavedName
                 && this.ActualName == toCompareWith.ActualName
-                && this.FileSystemType == toCompareWith.FileSystemType
-                && this.BackedUp == toCompareWith.BackedUp;
+                && this.FileSystemType == toCompareWith.FileSystemType;
         }
 
         public override int GetHashCode()
         {
             return base.GetHashCode();
-        }
-
-        public bool? SameCheckSum()
-        {
-            if (this.FileSystemType == FileSystemType.File)
-                return MD5CheckSum.Equals(RemoteMD5CheckSum) ? true : false;
-
-            return null;
         }
     }
 }

@@ -8,10 +8,12 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
             <th>File System Type</th>
             <th>Backup Directory</th>
             <th>Base Directory</th>
             <th>Name</th>
+            <th></th>
             <th></th>
             <th></th>
         </tr>
@@ -61,6 +63,14 @@
                         </a>
                     }
                 </td>
+                <td>
+                    @if (detail.BackupDetailsCreated)
+                    {
+                        <a asp-controller="Backup" asp-action="Exists" asp-route-id="@detail.ID" data-toggle="tooltip" title="Check if Exists">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                        </a>
+                    }
+                </td>
                 <td>@detail.FileSystemType</td>
                 <td>@detail.BackupDirectory</td>
                 <td>@detail.BaseDirectory</td>
@@ -72,7 +82,7 @@
                     }
                 </td>
                 <td>
-                    @if (detail.BackupDetailsCreated)
+                    @if (detail.BackupDetailsCreated && detail.IsFile)
                     { 
                         if (detail.ExistsOnRemote)
                         {
@@ -81,6 +91,19 @@
                         else
                         {
                             <i class="fa fa-file-o" aria-hidden="true" data-toggle="tooltip" title="Does not exist on Remote Server"></i>
+                        }
+                    }
+                </td>
+                <td>
+                    @if (detail.BackupDetailsCreated && detail.IsFile && detail.HasCheckSums)
+                    { 
+                        if (detail.SameCheckSum)
+                        {
+                            <i class="fa fa-file-text" aria-hidden="true" data-toggle="tooltip" title="MD5 matches with Remote Server"></i>
+                        }
+                        else
+                        {
+                            <i class="fa fa-file-text-o" aria-hidden="true" data-toggle="tooltip" title="MD5 does not match Remote Server"></i>
                         }
                     }
                 </td>

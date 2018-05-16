@@ -158,6 +158,11 @@ namespace SSHConnectCore.Controllers
             return DoAPIAction();
         }
 
+        public IActionResult Exists(string id)
+        {
+            return DoAPIAction();
+        }
+
         protected override IActionResult DoAPIAction()
         {
             string result = APICall();

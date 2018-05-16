@@ -23,7 +23,6 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
 
                 backupDetail.ExistsOnRemote = result.Result.Contains("exists");
                 backupDetail.RemoteLastCheck = DateTime.UtcNow;
-                results.Add(result.ExitStatus == 0);
 
                 if (backupDetail.FileSystemType == FileSystemType.File && backupDetail.ExistsOnRemote)
                 {
@@ -35,6 +34,8 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
 
                 results.Add(result.ExitStatus == 0);
             }
+
+            backupDetailList.Update();
             
             return results;
         }

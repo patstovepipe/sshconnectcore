@@ -112,16 +112,7 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Download(string id)
         {
-            var backupDetailsList = new List<BackupDetail>();
-
-            if (string.IsNullOrEmpty(id))
-                backupDetailsList = BackupDetails.StoredBackupDetails();
-            else
-                backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
-
-            var args = new object[] { backupDetailsList };
-
-            var results = (List<bool>)sshConnection.DownloadCommand(args);
+            var results = (List<bool>)sshConnection.DownloadCommand(BackupDetailsArgs(id));
 
             if (results.All(r => r))
                 return Json("Success");
@@ -131,16 +122,7 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Upload(string id)
         {
-            var backupDetailsList = new List<BackupDetail>();
-
-            if (string.IsNullOrEmpty(id))
-                backupDetailsList = BackupDetails.StoredBackupDetails();
-            else
-                backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
-
-            var args = new object[] { backupDetailsList };
-
-            var results = (List<bool>)sshConnection.UploadCommand(args);
+            var results = (List<bool>)sshConnection.UploadCommand(BackupDetailsArgs(id));
 
             if (results.All(r => r))
                 return Json("Success");
@@ -150,16 +132,7 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Exists(string id)
         {
-            var backupDetailsList = new List<BackupDetail>();
-
-            if (string.IsNullOrEmpty(id))
-                backupDetailsList = BackupDetails.StoredBackupDetails();
-            else
-                backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
-
-            var args = new object[] { backupDetailsList };
-
-            var results = (List<bool>)sshConnection.ExistsCommand(args);
+            var results = (List<bool>)sshConnection.ExistsCommand(BackupDetailsArgs(id));
 
             if (results.All(r => r))
                 return Json("Success");
@@ -171,6 +144,18 @@ namespace SSHConnectCore.Controllers
         public IActionResult Throw()
         {
             throw new InvalidOperationException("Test Exception");
+        }
+
+        private object[] BackupDetailsArgs(string id)
+        {
+            var backupDetailsList = new List<BackupDetail>();
+
+            if (string.IsNullOrEmpty(id))
+                backupDetailsList = BackupDetails.StoredBackupDetails();
+            else
+                backupDetailsList.Add(BackupDetails.StoredBackupDetails().Get(id));
+
+            return new object[] { backupDetailsList };
         }
     }
 }
