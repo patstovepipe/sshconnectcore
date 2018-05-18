@@ -29,9 +29,13 @@ namespace SSHConnectCore.Models.BackupDetails
         public string MD5CheckSum { get; set; }
         public string RemoteMD5CheckSum { get; set; }
 
+        [JsonIgnore]
         public bool BackupDetailsCreated => !string.IsNullOrWhiteSpace(this.BaseDirectory);
+        [JsonIgnore]
         public bool IsFile => this.FileSystemType == FileSystemType.File;
+        [JsonIgnore]
         public bool HasCheckSums => !string.IsNullOrWhiteSpace(this.MD5CheckSum) && !string.IsNullOrWhiteSpace(this.RemoteMD5CheckSum);
+        [JsonIgnore]
         public bool SameCheckSum => this.MD5CheckSum.Equals(this.RemoteMD5CheckSum);
 
         public override bool Equals(object other)
