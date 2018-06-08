@@ -5,6 +5,7 @@ using SSHConnectCore.Models.SSH.SSHCommands;
 using System;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace SSHConnectCore.Models.SSH
 {
@@ -30,53 +31,19 @@ namespace SSHConnectCore.Models.SSH
             return hasConnection;
         }
 
-        public object RestartCommand()
+        public object RunCommand(object[] args = null, [CallerMemberName] string callerMemberName = "")
         {
-            SSHCommand command = new RestartCommand();
-            return RunCommand(command);
-        }
+            var cmd = CommandFactory.Get(callerMemberName);
 
-        public object ShutdownCommand()
-        {
-            SSHCommand command = new ShutdownCommand();
-            return RunCommand(command);
-        }
-
-        public object KillProcessCommand(object[] args)
-        {
-            SSHCommand command = new KillProcessCommand();
-            return RunCommand(command, args);
-        }
-
-        public object DownloadCommand(object[] args)
-        {
-            SSHCommand command = new DownloadCommand();
-            return RunCommand(command, args);
-        }
-
-        public object UploadCommand(object[] args)
-        {
-            SSHCommand command = new UploadCommand();
-            return RunCommand(command, args);
-        }
-
-        public object ExistsCommand(object[] args)
-        {
-            SSHCommand command = new ExistsCommand();
-            return RunCommand(command, args);
-        }
-
-        private object RunCommand(SSHCommand command, object[] args = null)
-        {
-            command.downloadDirectory = this.appSettings.downloadDirectory;
-            command.server = this.server;
+            cmd.downloadDirectory = this.appSettings.downloadDirectory;
+            cmd.server = this.server;
 
             try
             {
                 if (args != null)
-                    return command.Run(args);
+                    return cmd.Run(args);
                 else
-                    return command.Run();
+                    return cmd.Run();
             }
             catch (AggregateException ex)
             {

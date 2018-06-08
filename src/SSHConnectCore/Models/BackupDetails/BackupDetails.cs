@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DiffMatchPatch;
+using Newtonsoft.Json;
 using SSHConnectCore.Configuration;
 using SSHConnectCore.Extensions;
 using System;
@@ -23,6 +24,23 @@ namespace SSHConnectCore.Models.BackupDetails
         public static BackupDetail Get(this List<BackupDetail> list, Guid id)
         {
             return list.Where(sbd => sbd.ID == id).FirstOrDefault();
+        }
+
+        public static string GetHTMLDiff(this List<BackupDetail> list, string id)
+        {
+            var backupDetail = list.Get(id);
+            var localFileLocation = Path.Combine(BackupDetails.ServerDir(), backupDetail.BackupDirectory.ToString(), backupDetail.SavedName);
+            var remoteFileLocation = Path.Combine(BackupDetails.ServerDir(), "temp", backupDetail.ActualName);
+
+            var localFileContents = File.ReadAllText(localFileLocation);
+            var remoteFileContents = File.ReadAllText(remoteFileLocation);
+
+            diff_match_patch dmp = new diff_match_patch();
+            List<Diff> diff = dmp.diff_main(localFileContents, remoteFileContents);
+            dmp.diff_cleanupSemantic(diff);
+            var html = dmp.diff_prettyHtml(diff).Replace("&para;", "");
+
+            return html;
         }
 
         public static List<BackupDetail> Exclude(this List<BackupDetail> list, string id)
@@ -154,7 +172,7 @@ namespace SSHConnectCore.Models.BackupDetails
             return storedBackupDetails;
         }
 
-        private static string ServerDir()
+        public static string ServerDir()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return appSettings.windowsServerDirectory;

@@ -95,7 +95,7 @@ namespace SSHConnectCore.Controllers
                                 var counter = 2;
                                 name = counter + "-" + model.ActualName;
 
-                                while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(ServerDir(), model.BackupDirectory.ToString(), name))
+                                while (model.FileSystemType == FileSystemType.File && (System.IO.File.Exists(Path.Combine(BackupDetails.ServerDir(), model.BackupDirectory.ToString(), name))
                                         || storedBackupDetails.Exists(sbd => sbd.SavedName == name && sbd.FileSystemType == model.FileSystemType)))
                                 {
                                     counter++;
@@ -112,7 +112,7 @@ namespace SSHConnectCore.Controllers
                                 var counter = 2;
                                 name = counter + "-" + model.ActualName;
 
-                                while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(ServerDir(), model.BackupDirectory.ToString(), name))
+                                while (model.FileSystemType == FileSystemType.Directory && (System.IO.Directory.Exists(Path.Combine(BackupDetails.ServerDir(), model.BackupDirectory.ToString(), name))
                                     || storedBackupDetails.Exists(sbd => sbd.SavedName == name && sbd.FileSystemType == model.FileSystemType)))
                                 {
                                     counter++;
@@ -158,9 +158,41 @@ namespace SSHConnectCore.Controllers
             return DoAPIAction();
         }
 
+        public IActionResult Delete(string id)
+        {
+            var storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(id);
+
+            storedBackupDetails.Save();
+
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Exists(string id)
         {
             return DoAPIAction();
+        }
+
+        public IActionResult Diff(string id)
+        {
+            string result = APICall();
+
+            result = JsonConvert.DeserializeObject(result).ToString();
+
+            if (result.Equals("Success", StringComparison.OrdinalIgnoreCase))
+            {
+                ViewBag.Diff = BackupDetails.StoredBackupDetails().GetHTMLDiff(id);
+                Console.WriteLine(ViewBag.Diff);
+
+                return View("DiffDisplay");
+            }
+
+            var vm = SetMessage(result);
+
+            var model = new SearchViewModel();
+            model.BackupDetails = BackupDetails.List();
+            model.MessageViewModel = vm;
+
+            return View("Index", model);
         }
 
         protected override IActionResult DoAPIAction()
@@ -175,25 +207,6 @@ namespace SSHConnectCore.Controllers
             model.MessageViewModel = vm;
 
             return View("Index", model);
-        }
-
-        public IActionResult Delete(string id)
-        {
-            var storedBackupDetails = BackupDetails.StoredBackupDetails().Exclude(id);
-
-            storedBackupDetails.Save();
-
-            return RedirectToAction("Index");
-        }
-
-        private string ServerDir()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return this.appSettings.windowsServerDirectory;
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                return this.appSettings.linuxServerDirectory;
-            else
-                throw new Exception("Windows or Linux platform not found.");
         }
     }
 }

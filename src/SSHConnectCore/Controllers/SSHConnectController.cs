@@ -11,6 +11,8 @@ using SSHConnectCore.Models.SSH;
 using System.Reflection;
 using System.Net.Sockets;
 using SSHConnectCore.Models;
+using SSHConnectCore.Models.SSH.SSHCommands;
+using System.Runtime.CompilerServices;
 
 namespace SSHConnectCore.Controllers
 {
@@ -56,7 +58,7 @@ namespace SSHConnectCore.Controllers
         {
             try
             {
-                sshConnection.RestartCommand();
+                sshConnection.RunCommand();
             }
             catch (SshConnectionException)
             {
@@ -70,7 +72,7 @@ namespace SSHConnectCore.Controllers
         {
             try
             {
-                sshConnection.ShutdownCommand();
+                sshConnection.RunCommand();
             }
             catch (SshConnectionException)
             {
@@ -88,7 +90,7 @@ namespace SSHConnectCore.Controllers
             }
             else
             {
-                var result = sshConnection.KillProcessCommand(new string[] { id });
+                var result = sshConnection.RunCommand(new string[] { id });
                 SshCommand sshCommandResult;
 
                 if (result.GetType() == typeof(SshCommand))
@@ -112,27 +114,27 @@ namespace SSHConnectCore.Controllers
 
         public IActionResult Download(string id)
         {
-            var results = (List<bool>)sshConnection.DownloadCommand(BackupDetailsArgs(id));
-
-            if (results.All(r => r))
-                return Json("Success");
-            else
-                return Json("Error");
+            return GetResult(id);
         }
 
         public IActionResult Upload(string id)
         {
-            var results = (List<bool>)sshConnection.UploadCommand(BackupDetailsArgs(id));
-
-            if (results.All(r => r))
-                return Json("Success");
-            else
-                return Json("Error");
+            return GetResult(id);
         }
 
         public IActionResult Exists(string id)
         {
-            var results = (List<bool>)sshConnection.ExistsCommand(BackupDetailsArgs(id));
+            return GetResult(id);
+        }
+
+        public IActionResult Diff(string id)
+        {
+            return GetResult(id);
+        }
+
+        private IActionResult GetResult(string id, [CallerMemberName] string callerMemberName = "")
+        {
+            var results = (List<bool>)sshConnection.RunCommand(BackupDetailsArgs(id), callerMemberName);
 
             if (results.All(r => r))
                 return Json("Success");

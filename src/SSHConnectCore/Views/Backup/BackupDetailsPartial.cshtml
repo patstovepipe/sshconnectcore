@@ -9,6 +9,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
             <th>File System Type</th>
             <th>Backup Directory</th>
             <th>Base Directory</th>
@@ -64,10 +65,18 @@
                     }
                 </td>
                 <td>
-                    @if (detail.BackupDetailsCreated)
+                    @if (detail.BackupDetailsCreated && detail.IsFile)
                     {
                         <a asp-controller="Backup" asp-action="Exists" asp-route-id="@detail.ID" data-toggle="tooltip" title="Check if Exists">
                             <i class="fa fa-refresh" aria-hidden="true"></i>
+                        </a>
+                    }
+                </td>
+                <td>
+                    @if (detail.BackupDetailsCreated && detail.IsFile)
+                    {
+                        <a asp-controller="Backup" asp-action="Diff" asp-route-id="@detail.ID" data-toggle="tooltip" title="View Differences">
+                            <i class="fa fa-files-o" aria-hidden="true"></i>
                         </a>
                     }
                 </td>
