@@ -10,6 +10,30 @@
                 "${workspaceFolder}/src/SSHConnectCore/SSHConnectCore.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build Release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/SSHConnectCore/SSHConnectCore.csproj",
+                "-c",
+                "Release"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/SSHConnectCore/SSHConnectCore.csproj",
+                "-c",
+                "Release"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }
