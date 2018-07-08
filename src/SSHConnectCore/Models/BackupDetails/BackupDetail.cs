@@ -36,7 +36,7 @@ namespace SSHConnectCore.Models.BackupDetails
         [JsonIgnore]
         public bool HasCheckSums => !string.IsNullOrWhiteSpace(this.MD5CheckSum) && !string.IsNullOrWhiteSpace(this.RemoteMD5CheckSum);
         [JsonIgnore]
-        public bool SameCheckSum => this.MD5CheckSum.Equals(this.RemoteMD5CheckSum);
+        public bool? SameCheckSum => HasCheckSums ? this.MD5CheckSum.Equals(this.RemoteMD5CheckSum) : (bool?)null;
 
         public override bool Equals(object other)
         {

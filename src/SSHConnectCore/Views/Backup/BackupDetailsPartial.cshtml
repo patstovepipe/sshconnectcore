@@ -106,7 +106,7 @@
                 <td>
                     @if (detail.BackupDetailsCreated && detail.IsFile && detail.HasCheckSums)
                     { 
-                        if (detail.SameCheckSum)
+                        if (detail.SameCheckSum ?? false)
                         {
                             <i class="fa fa-file-text" aria-hidden="true" data-toggle="tooltip" title="MD5 matches with Remote Server"></i>
                         }
