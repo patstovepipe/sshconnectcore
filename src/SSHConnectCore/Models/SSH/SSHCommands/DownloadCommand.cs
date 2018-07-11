@@ -2,6 +2,7 @@
 using Renci.SshNet;
 using SSHConnectCore.Models.BackupDetails;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace SSHConnectCore.Models.SSH.SSHCommands
 {
@@ -16,7 +17,17 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
             {
                 var source = Path.Combine(backupDetail.BaseDirectory, backupDetail.ActualName);
                 var target = Path.Combine(this.downloadDirectory, backupDetail.BackupDirectory.ToString());
-                var rsyncCommand = string.Format("sudo rsync -az {0} {1}", source, target);
+
+                // If the API is hosted on a linux server we need to add some extra details
+                var settings = BackupDetails.BackupDetails.appSettings;
+                var linuxServerDetails = "";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                { 
+                    target = $"{settings.api.host}:{target}";
+                    linuxServerDetails = $"--rsh=\"sshpass -p {settings.api.password} ssh -l {settings.api.username}\"";
+                }
+
+                var rsyncCommand = $"sudo rsync {linuxServerDetails} -az {source} {target}";
 
                 var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
                 results.Add(result.ExitStatus == 0);

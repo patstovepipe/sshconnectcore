@@ -85,7 +85,7 @@ namespace SSHConnectCore.Models.BackupDetails
 
     public static class BackupDetails
     {
-        private static AppSettings appSettings;
+        public static AppSettings appSettings;
         private static string backupDetailsFileName = "backup_details.json";
         public static string backupDetailsFullFileName => Path.Combine(ServerDir(), backupDetailsFileName);
 
