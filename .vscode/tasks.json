@@ -34,6 +34,16 @@
                 "Release"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish, delete and rename",
+            "command": "./rm-mv_script.sh",
+            "type": "shell",
+            "dependsOn" : "publish"
+        },
+        {
+            "label": "parallel example",
+            "dependsOn": [ "publish", "delete and rename" ]
         }
     ]
 }
