@@ -1,4 +1,10 @@
-﻿namespace SSHConnectCore.Configuration
+﻿/*
+To edit appsettings.json locally run this command (which untracks file)
+    git update-index --assume-unchanged path/to/file
+To start tracking file again
+    git update-index --no-assume-unchanged path/to/file
+*/
+namespace SSHConnectCore.Configuration
 {
     public class AppSettings
     {
@@ -10,6 +16,7 @@
         public string windowsServerDirectory { get; set; }
     }
 
+    // Raspberry Pi
     public class SSHServer
     {
         public string host { get; set; }
@@ -18,6 +25,7 @@
         public string password { get; set; }
     }
 
+    // Server hosting this
     public class API
     {
         public string host { get; set; }
