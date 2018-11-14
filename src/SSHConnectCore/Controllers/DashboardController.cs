@@ -9,10 +9,6 @@ namespace SSHConnectCore.Controllers
 {
     public class DashboardController : WebController
     {
-        public DashboardController(IOptions<AppSettings> settings) : base(settings)
-        {
-        }
-
         public IActionResult Index()
         {
             ViewBag.KillProcessSelectList = KillProcessSelectList();

@@ -13,9 +13,9 @@ namespace SSHConnectCore.Models.SSH
     {
         public string[] killProcessList;
 
-        public SSHConnection(IOptions<AppSettings> settings, RemoteServer server) : base(settings, server)
+        public SSHConnection(RemoteServer server) : base(server)
         {
-            this.killProcessList = this.appSettings.killProcessList.Split(',');
+            this.killProcessList = Settings.appSettings.killProcessList.Split(',');
         }
 
         public bool HasConnection()
@@ -35,7 +35,7 @@ namespace SSHConnectCore.Models.SSH
         {
             var cmd = CommandFactory.Get(callerMemberName);
 
-            cmd.downloadDirectory = this.appSettings.downloadDirectory;
+            cmd.downloadDirectory = Settings.appSettings.downloadDirectory;
             cmd.server = this.server;
 
             try

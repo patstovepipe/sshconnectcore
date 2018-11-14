@@ -4,6 +4,7 @@ using SSHConnectCore.Models.BackupDetails;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using SSHConnectCore.Configuration;
 
 namespace SSHConnectCore.Models.SSH.SSHCommands
 {
@@ -18,12 +19,11 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
             var target = Path.Combine(this.downloadDirectory, "temp");
 
             // If the API is hosted on a linux server we need to add some extra details
-            var settings = BackupDetails.BackupDetails.appSettings;
             var linuxServerDetails = "";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                target = $"{settings.api.host}:{target}";
-                linuxServerDetails = $"--rsh=\"sshpass -p {settings.api.password} ssh -l {settings.api.username}\"";
+                target = $"{Settings.appSettings.api.host}:{target}";
+                linuxServerDetails = $"--rsh=\"sshpass -p {Settings.appSettings.api.password} ssh -l {Settings.appSettings.api.username}\"";
             }
 
             var rsyncCommand = $"sudo rsync {linuxServerDetails} -az {source} {target}";

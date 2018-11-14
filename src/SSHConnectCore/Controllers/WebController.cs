@@ -9,18 +9,11 @@ namespace SSHConnectCore.Controllers
 {
     public abstract class WebController : Controller
     {
-        protected readonly AppSettings appSettings;
-
         protected static string apiControllerName = "SSHConnect";
 
         protected string CurrentURL => Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
 
         protected string APIURL => CurrentURL.Replace(ControllerContext.RouteData.Values["controller"].ToString(), apiControllerName);
-
-        protected WebController (IOptions<AppSettings> settings)
-        {
-            this.appSettings = settings.Value;
-        }
 
         protected virtual IActionResult DoAPIAction()
         {

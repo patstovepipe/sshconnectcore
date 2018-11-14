@@ -20,9 +20,8 @@ namespace SSHConnectCore.Controllers
     {
         private readonly SSHConnection sshConnection;
 
-        public SSHConnectController(IOptions<AppSettings> settings, SSHConnection sshConnection)
+        public SSHConnectController(SSHConnection sshConnection)
         {
-            BackupDetails.SetAppSettings(settings.Value);
             this.sshConnection = sshConnection;
         }
 

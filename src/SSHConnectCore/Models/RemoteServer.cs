@@ -11,14 +11,12 @@ namespace SSHConnectCore.Models
         public string username { get; set; }
         public string password { get; set; }
 
-        public RemoteServer(IOptions<AppSettings> settings)
+        public RemoteServer()
         {
-            var appSettings = settings.Value;
-
-            this.host = appSettings.sshServer.host; ;
-            this.port = Convert.ToInt32(appSettings.sshServer.port);
-            this.username = appSettings.sshServer.username;
-            this.password = appSettings.sshServer.password;
+            this.host = Settings.appSettings.sshServer.host; ;
+            this.port = Convert.ToInt32(Settings.appSettings.sshServer.port);
+            this.username = Settings.appSettings.sshServer.username;
+            this.password = Settings.appSettings.sshServer.password;
         }
     }
 }

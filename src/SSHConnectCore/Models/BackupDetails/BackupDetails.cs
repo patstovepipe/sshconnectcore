@@ -85,15 +85,8 @@ namespace SSHConnectCore.Models.BackupDetails
 
     public static class BackupDetails
     {
-        public static AppSettings appSettings;
         private static string backupDetailsFileName = "backup_details.json";
         public static string backupDetailsFullFileName => Path.Combine(ServerDir(), backupDetailsFileName);
-
-        public static void SetAppSettings(AppSettings settings)
-        {
-            if (appSettings == null)
-                appSettings = settings;
-        }
 
         public static List<BackupDetail> List(SearchViewModel model)
         {
@@ -174,12 +167,19 @@ namespace SSHConnectCore.Models.BackupDetails
 
         public static string ServerDir()
         {
+            string serverDir = "";
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return appSettings.windowsServerDirectory;
+                serverDir = Settings.appSettings.windowsServerDirectory;
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                return appSettings.linuxServerDirectory;
+                serverDir = Settings.appSettings.downloadDirectory;
             else
                 throw new Exception("Windows or Linux platform not found.");
+
+            if (string.IsNullOrEmpty(serverDir))
+                throw new Exception("Windows or Linux server details not found.");
+
+            return serverDir;
         }
 
         public static FileSystemType FileSystemType_TryParse(string fileSystemType)

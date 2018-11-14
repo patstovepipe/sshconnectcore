@@ -1,4 +1,5 @@
 ﻿using Renci.SshNet;
+using SSHConnectCore.Configuration;
 using SSHConnectCore.Models.BackupDetails;
 using System.Collections.Generic;
 using System.IO;
@@ -19,12 +20,11 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
                 var target = Path.Combine(backupDetail.BaseDirectory);
 
                 // If the API is hosted on a linux server we need to add some extra details
-                var settings = BackupDetails.BackupDetails.appSettings;
                 var linuxServerDetails = "";
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 { 
-                    source = $"{settings.api.host}:{source}";
-                    linuxServerDetails = $"--rsh=\"sshpass -p {settings.api.password} ssh -l {settings.api.username}\"";
+                    source = $"{Settings.appSettings.api.host}:{source}";
+                    linuxServerDetails = $"--rsh=\"sshpass -p {Settings.appSettings.api.password} ssh -l {Settings.appSettings.api.username}\"";
                 }
 
                 var rsyncCommand = $"sudo rsync {linuxServerDetails} -az --perms --chmod=777 {source} {target}";

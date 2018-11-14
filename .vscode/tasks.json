@@ -40,10 +40,6 @@
             "command": "./rm-mv_script.sh",
             "type": "shell",
             "dependsOn" : "publish"
-        },
-        {
-            "label": "parallel example",
-            "dependsOn": [ "publish", "delete and rename" ]
         }
     ]
 }

@@ -13,11 +13,6 @@ namespace SSHConnectCore.Controllers
 {
     public class BackupController : WebController
     {
-        public BackupController(IOptions<AppSettings> settings) : base(settings)
-        {
-            BackupDetails.SetAppSettings(settings.Value);
-        }
-
         [HttpGet]
         public IActionResult Index()
         {
