@@ -16,7 +16,6 @@ namespace SSHConnectCore.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-
             var model = new SearchViewModel();
             model.BackupDetails = BackupDetails.List();
 
@@ -72,7 +71,7 @@ namespace SSHConnectCore.Controllers
                 }
 
                 // Check if file/folder is already recorded
-                if (storedBackupDetails.Where(sbd => sbd.BaseDirectory == model.BaseDirectory
+                if (storedBackupDetails.Where(sbd => sbd.BaseDirectory == model.BaseDirectory && sbd.BackupDirectory == model.BackupDirectory
                     && sbd.ActualName == model.ActualName && sbd.FileSystemType == model.FileSystemType).Count() == 0)
                 {
                     model.BackedUp = false;
@@ -83,7 +82,7 @@ namespace SSHConnectCore.Controllers
 
                         if (model.FileSystemType == FileSystemType.File)
                         {
-                            if (!storedBackupDetails.Exists(sbd => sbd.SavedName == model.ActualName && sbd.FileSystemType == model.FileSystemType))
+                            if (!storedBackupDetails.Exists(sbd => sbd.SavedName == model.ActualName && sbd.FileSystemType == model.FileSystemType && sbd.BackupDirectory == model.BackupDirectory))
                                 name = model.ActualName;
                             else
                             {
@@ -100,7 +99,7 @@ namespace SSHConnectCore.Controllers
                         }
                         else
                         {
-                            if (!storedBackupDetails.Exists(sbd => sbd.SavedName == model.ActualName && sbd.FileSystemType == model.FileSystemType))
+                            if (!storedBackupDetails.Exists(sbd => sbd.SavedName == model.ActualName && sbd.FileSystemType == model.FileSystemType && sbd.BackupDirectory == model.BackupDirectory))
                                 name = model.ActualName;
                             else
                             {

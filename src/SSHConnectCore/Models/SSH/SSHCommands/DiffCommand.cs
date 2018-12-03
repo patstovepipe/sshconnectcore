@@ -20,15 +20,16 @@ namespace SSHConnectCore.Models.SSH.SSHCommands
 
             // If the API is hosted on a linux server we need to add some extra details
             var linuxServerDetails = "";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && Settings.appSettings.sshServer.host != "127.0.0.1")
             {
                 target = $"{Settings.appSettings.api.host}:{target}";
-                linuxServerDetails = $"--rsh=\"sshpass -p {Settings.appSettings.api.password} ssh -l {Settings.appSettings.api.username}\"";
+                linuxServerDetails = $" --rsh=\"sshpass -p {Settings.appSettings.api.password} ssh -l {Settings.appSettings.api.username}\"";
             }
 
-            var rsyncCommand = $"sudo rsync {linuxServerDetails} -az {source} {target}";
+            var rsyncCommand = $"sudo rsync{linuxServerDetails} -az {source} {target}";
+            var fullCommand = $"echo {server.password} | {rsyncCommand}";
 
-            var result = client.RunCommand($"echo {server.password} | " + rsyncCommand);
+            var result = client.RunCommand(fullCommand);
             results.Add(result.ExitStatus == 0);
 
             return results;
