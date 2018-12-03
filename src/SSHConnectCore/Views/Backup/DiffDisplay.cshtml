@@ -1,0 +1,9 @@
+@{
+    ViewData["Title"] = "Difference";
+}
+
+<div class="container-fluid">
+    <h1 class="page-header">Difference</h1>
+    <input type="button" value="Back" onclick="location.href='@Url.Action("Index", "Backup")'" class="btn btn-primary mb-20"/>
+    <div class="panel panel-default pad-8">@Html.Raw(ViewBag.Diff)</div>
+</div>
